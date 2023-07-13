@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Rebel</string>
+    <string name="perm_rationale">To let you play the music on your phone, Rebel needs access to your files.</string>
 
 </resources>
