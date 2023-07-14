@@ -237,6 +237,10 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             if (musicList.getTitle().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(musicList);
             }
+            if (musicList.getArtist().toLowerCase().contains(text.toLowerCase())) {
+                filteredList.add(musicList);
+            }
+
         }
 
         if (filteredList.isEmpty()) {
