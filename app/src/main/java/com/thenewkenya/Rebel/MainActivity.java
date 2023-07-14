@@ -134,6 +134,8 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         playPauseImg = findViewById(R.id.playPauseImg);
         final ImageView nextBtn = findViewById(R.id.nextBtn);
         final ImageView prevBtn = findViewById(R.id.previousBtn);
+        final ImageView loopBtn = findViewById(R.id.loopBtn);
+        final ImageView shuffleBtn = findViewById(R.id.shuffleOffBtn);
         playerSeekBar = findViewById(R.id.playerSeekBar);
 
         startTime = findViewById(R.id.startTime);
@@ -189,6 +191,23 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                 musicRecyclerView.scrollToPosition(prevSongListPosition);
 
                 onChanged(prevSongListPosition);
+            }
+        });
+
+        loopBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loopBtn.setImageResource(R.drawable.loop_button_on);
+                // to be implemented
+                // at a future date
+            }
+        });
+
+        shuffleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shuffleBtn.setImageResource(R.drawable.shuffle_on_icon);
+
             }
         });
 

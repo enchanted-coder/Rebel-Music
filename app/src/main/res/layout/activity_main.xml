@@ -104,6 +104,14 @@
             android:gravity="center" >
 
             <ImageView
+                android:id="@+id/shuffleOffBtn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/shuffle_off_icon"
+                android:layout_marginEnd="20dp"
+                android:padding="10dp" />
+
+            <ImageView
                 android:id="@+id/previousBtn"
                 android:layout_marginEnd="20dp"
                 android:src="@drawable/previous_icon"
@@ -137,6 +145,14 @@
                 android:layout_height="50dp"
                 android:src="@drawable/next_icon"
                 android:padding="10dp" />
+
+            <ImageView
+                android:id="@+id/loopBtn"
+                android:layout_marginStart="20dp"
+                android:src="@drawable/loop_button"
+                android:padding="10dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
 
         </LinearLayout>
 
