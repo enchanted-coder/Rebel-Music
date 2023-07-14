@@ -5,7 +5,7 @@
         android:gravity="center_vertical">
 
         <shape android:shape="rectangle">
-            <solid android:color="#1AFFFFFF" />
+            <solid android:color="@color/material_dynamic_neutral80" />
                 <corners android:radius="10dp" />
                 <size android:height="5dp" />
         </shape>
@@ -16,8 +16,8 @@
 
         <clip>
 
-            <shape android:shape="oval">
-                <solid android:color="#b16286" />
+            <shape android:shape="rectangle">
+                <solid android:color="@color/material_dynamic_neutral50" />
                 <corners android:radius="10dp" />
                 <size android:height="5dp" />
             </shape>

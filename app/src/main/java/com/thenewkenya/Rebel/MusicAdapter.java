@@ -41,7 +41,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
             playingPosition = position;
             holder.rootLayout.setBackgroundResource(R.drawable.round_back_blue_10);
         } else {
-            //holder.rootLayout.setBackgroundResource(R.drawable.);
+            holder.rootLayout.setBackgroundResource(R.drawable.round_back_10);
         }
 
 

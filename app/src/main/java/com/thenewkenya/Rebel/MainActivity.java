@@ -263,34 +263,28 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    mediaPlayer.setDataSource(MainActivity.this, musicLists.get(position).getMusicFile());
-                    mediaPlayer.prepare();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(MainActivity.this, "Unable to play track", Toast.LENGTH_SHORT).show();
-                }
+        new Thread(() -> {
+            try {
+                mediaPlayer.setDataSource(MainActivity.this, musicLists.get(position).getMusicFile());
+                mediaPlayer.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(MainActivity.this, "Unable to play track", Toast.LENGTH_SHORT).show();
             }
         }).start();
 
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                final int getTotalDuration = mp.getDuration();
+        mediaPlayer.setOnPreparedListener(mp -> {
+            final int getTotalDuration = mp.getDuration();
 
-                String generateDuration = String.format(Locale.getDefault(), "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(getTotalDuration), TimeUnit.MILLISECONDS.toSeconds(getTotalDuration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(getTotalDuration)));
+            String generateDuration = String.format(Locale.getDefault(), "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(getTotalDuration), TimeUnit.MILLISECONDS.toSeconds(getTotalDuration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(getTotalDuration)));
 
-                endtime.setText(generateDuration);
-                isPlaying = true;
+            endtime.setText(generateDuration);
+            isPlaying = true;
 
-                mp.start();
+            mp.start();
 
-                playerSeekBar.setMax(getTotalDuration);
-                playPauseImg.setImageResource(R.drawable.pause_icon);
-            }
+            playerSeekBar.setMax(getTotalDuration);
+            playPauseImg.setImageResource(R.drawable.pause_icon);
         });
 
         timer = new Timer();

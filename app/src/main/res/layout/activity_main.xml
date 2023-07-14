@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+
     tools:context=".MainActivity">
 
 
@@ -22,11 +23,16 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageView
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
                 android:layout_margin="10dp"
-                android:layout_height="20dp"
                 android:layout_width="20dp"
-                android:src="@drawable/search_icon" />
+                android:layout_height="20dp"
+                app:queryHint="search here"
+                />
+
+
+
 
         </LinearLayout>
 
@@ -36,7 +42,7 @@
             android:layout_centerInParent="true"
             android:text="REBEL"
             android:contextClickable="true"
-            android:textColor="#b16286"
+
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -47,6 +53,8 @@
             android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
+
 
             <ImageView
                 android:layout_width="20dp"
@@ -83,7 +91,7 @@
                 android:layout_marginStart="10dp"
                 android:textSize="12sp"
                 android:layout_centerVertical="true"
-                android:textColor="#b16286"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00:00" />
@@ -104,7 +112,7 @@
                 android:id="@+id/endTime"
                 android:layout_marginEnd="10dp"
                 android:layout_centerVertical="true"
-                android:textColor="#b16286"
+
                 android:textSize="12sp"
                 android:layout_alignParentEnd="true"
                 android:text="00:00"
@@ -135,8 +143,8 @@
                 app:cardUseCompatPadding="true"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="10dp"
-                android:outlineAmbientShadowColor="#b16286"
-                android:outlineSpotShadowColor="#b16286" >
+                android:outlineAmbientShadowColor="@color/material_dynamic_neutral50"
+                android:outlineSpotShadowColor="@color/material_dynamic_neutral50" >
 
                 <ImageView
                     android:id="@+id/playPauseImg"
