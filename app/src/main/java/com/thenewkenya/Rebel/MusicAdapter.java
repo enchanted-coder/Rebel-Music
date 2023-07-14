@@ -23,8 +23,12 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
 
     public void setFilteredList(List<MusicList> filteredList) {
         this.list = filteredList;
+
         notifyDataSetChanged();
+
+
     }
+
     public MusicAdapter(List<MusicList> list, Context context) {
         this.list = list;
         this.context = context;

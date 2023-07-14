@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     private void onPermissionGranted() {
 
         getMusicFiles();
+
     }
 
     @Override
@@ -157,6 +158,8 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                 if(nextSongListPosition >= musicLists.size()) {
                     nextSongListPosition = 0;
                 }
+                isPlaying = false;
+                mediaPlayer.pause();
 
                 musicLists.get(currentSongListPosition).setPlaying(false);
                 musicLists.get(nextSongListPosition).setPlaying(true);
@@ -176,6 +179,8 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                 if(prevSongListPosition < 0) {
                     prevSongListPosition = musicLists.size()-1;
                 }
+                isPlaying = false;
+                mediaPlayer.pause();
 
                 musicLists.get(currentSongListPosition).setPlaying(false);
                 musicLists.get(prevSongListPosition).setPlaying(true);
@@ -246,12 +251,15 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         if (filteredList.isEmpty()) {
             Toast.makeText(this, "No track found", Toast.LENGTH_SHORT).show();
         } else {
+
             musicAdapter.setFilteredList(filteredList);
+
         }
     }
 
     @SuppressLint("Range")
     private void getMusicFiles() {
+
 
         ContentResolver contentResolver = getContentResolver();
 

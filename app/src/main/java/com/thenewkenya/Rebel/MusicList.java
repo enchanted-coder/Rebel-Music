@@ -9,6 +9,7 @@ public class MusicList {
 
     private Uri musicFile;
 
+
     public MusicList(String title, String artist, String duration, boolean isPlaying, Uri musicFile) {
         this.title = title;
         this.artist = artist;
