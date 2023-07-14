@@ -2,6 +2,7 @@ package com.thenewkenya.Rebel;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.DialogInterface;
@@ -15,6 +16,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -41,6 +43,8 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements SongChangeListener {
+
+    private SearchView searchView;
 
     private final List<MusicList> musicLists = new ArrayList<>();
     private RecyclerView musicRecyclerView;
@@ -108,8 +112,22 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         com.thenewkenya.Rebel.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        final LinearLayout SearchBtn = findViewById(R.id.searchBtn);
-        final LinearLayout menuBtn = findViewById(R.id.menuBtn);
+        searchView = findViewById(R.id.searchView);
+        searchView.clearFocus();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterList(newText);
+                return true;
+            }
+        });
+
+
         musicRecyclerView = findViewById(R.id.musicRecyclerView);
         final CardView playPauseCard = findViewById(R.id.playPauseCard);
         playPauseImg = findViewById(R.id.playPauseImg);
@@ -210,6 +228,22 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         });
 
 
+    }
+
+    private void filterList(String text) {
+        List<MusicList> filteredList = new ArrayList<>();
+
+        for(MusicList musicList : musicLists) {
+            if (musicList.getTitle().toLowerCase().contains(text.toLowerCase())) {
+                filteredList.add(musicList);
+            }
+        }
+
+        if (filteredList.isEmpty()) {
+            Toast.makeText(this, "No track found", Toast.LENGTH_SHORT).show();
+        } else {
+            musicAdapter.setFilteredList(filteredList);
+        }
     }
 
     @SuppressLint("Range")

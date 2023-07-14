@@ -20,6 +20,11 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
     private final Context context;
     private int playingPosition = 0;
     private final SongChangeListener songChangeListener;
+
+    public void setFilteredList(List<MusicList> filteredList) {
+        this.list = filteredList;
+        notifyDataSetChanged();
+    }
     public MusicAdapter(List<MusicList> list, Context context) {
         this.list = list;
         this.context = context;
