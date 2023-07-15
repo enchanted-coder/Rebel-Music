@@ -30,9 +30,19 @@
             app:layout_constraintTop_toTopOf="parent"
             app:queryHint="Search Here ..." />
 
-
-
-
+        <androidx.appcompat.widget.ActionMenuView
+            android:id="@+id/menuBtn"
+            android:layout_width="24dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="380dp"
+            android:background="@drawable/menu_icon"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:queryHint="Search Here ..." />
 
 
     </RelativeLayout>
@@ -125,8 +135,8 @@
                 android:layout_height="100dp"
 
                 app:cardUseCompatPadding="true"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="10dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="12dp"
                 android:outlineAmbientShadowColor="@color/material_dynamic_neutral50"
                 android:outlineSpotShadowColor="@color/material_dynamic_neutral50" >
 

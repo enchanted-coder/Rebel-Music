@@ -1,7 +1,11 @@
 package com.thenewkenya.Rebel;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -76,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         }
     }
 
+    @TargetApi(23)
     private void showPermissionRationale() {
         AlertDialog builder = new AlertDialog.Builder(this).create();
         builder.setIcon(R.drawable.ic_folder);
@@ -88,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                         final int READ_FILES_CODE = 2588;
                         requestPermissions(new String[]{Manifest.permission.READ_MEDIA_AUDIO}
                                 , READ_FILES_CODE);
+                        finish();
+                        startActivity(getIntent());
                     }
                 });
         builder.setCanceledOnTouchOutside(false);
@@ -101,64 +108,52 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
     public void onRequestPermissionResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+
             showPermissionRationale();
         } else {
+
             onPermissionGranted();
         }
     }
 
     private void onPermissionGranted() {
-
-        getMusicFiles();
+        startActivity(new Intent(this, this.getClass()));
 
     }
+
+
+
+
 
     // start here
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
-
-
         com.thenewkenya.Rebel.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
 
-
         searchView = findViewById(R.id.searchView);
         searchView.clearFocus();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                filterList(newText);
-                return true;
-            }
-        });
-
-
-        musicRecyclerView = findViewById(R.id.musicRecyclerView);
         final CardView playPauseCard = findViewById(R.id.playPauseCard);
         playPauseImg = findViewById(R.id.playPauseImg);
+
         final ImageView nextBtn = findViewById(R.id.nextBtn);
         final ImageView prevBtn = findViewById(R.id.previousBtn);
         final ImageView loopBtn = findViewById(R.id.loopBtn);
-
         final ImageView shuffleBtn = findViewById(R.id.shuffleOffBtn);
-        playerSeekBar = findViewById(R.id.playerSeekBar);
 
+        playerSeekBar = findViewById(R.id.playerSeekBar);
         startTime = findViewById(R.id.startTime);
         endtime = findViewById(R.id.endTime);
+        mediaPlayer = new MediaPlayer();
 
+        musicRecyclerView = findViewById(R.id.musicRecyclerView);
         musicRecyclerView.setHasFixedSize(true);
         musicRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mediaPlayer = new MediaPlayer();
+
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED) {
             getMusicFiles();
@@ -169,21 +164,47 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int nextSongListPosition = currentSongListPosition+1;
 
-                if(nextSongListPosition >= musicLists.size()) {
-                    nextSongListPosition = 0;
+                if (shuffleCounter % 2 == 0) {
+                    int upperbounds = musicLists.size();
+                    int nextSongListPosition = rand.nextInt(upperbounds);
+
+                    if(nextSongListPosition >= musicLists.size()) {
+                        nextSongListPosition = 0;
+                    }
+                    isPlaying = false;
+                    mediaPlayer.pause();
+
+                    musicLists.get(currentSongListPosition).setPlaying(false);
+                    musicLists.get(nextSongListPosition).setPlaying(true);
+
+                    musicAdapter.updateList(musicLists);
+                    musicRecyclerView.scrollToPosition(nextSongListPosition);
+
+                    onChanged(nextSongListPosition);
+
+
+                } else if (shuffleCounter % 2 != 0){
+
+                    int nextSongListPosition = currentSongListPosition+1;
+
+                    if(nextSongListPosition >= musicLists.size()) {
+                        nextSongListPosition = 0;
+                    }
+                    isPlaying = false;
+                    mediaPlayer.pause();
+
+                    musicLists.get(currentSongListPosition).setPlaying(false);
+                    musicLists.get(nextSongListPosition).setPlaying(true);
+
+                    musicAdapter.updateList(musicLists);
+                    musicRecyclerView.scrollToPosition(nextSongListPosition);
+
+                    onChanged(nextSongListPosition);
+
                 }
-                isPlaying = false;
-                mediaPlayer.pause();
 
-                musicLists.get(currentSongListPosition).setPlaying(false);
-                musicLists.get(nextSongListPosition).setPlaying(true);
 
-                musicAdapter.updateList(musicLists);
-                musicRecyclerView.scrollToPosition(nextSongListPosition);
-
-                onChanged(nextSongListPosition);
             }
         });
 
@@ -283,6 +304,19 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterList(newText);
+                return true;
             }
         });
 
@@ -404,8 +438,6 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
-
-
 
         timer = new Timer();
 

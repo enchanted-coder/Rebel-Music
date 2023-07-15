@@ -30,6 +30,7 @@ public class MusicList {
         return duration;
     }
 
+
     public boolean isPlaying() {
         return isPlaying;
     }

@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -21,8 +22,10 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
     private int playingPosition = 0;
     private final SongChangeListener songChangeListener;
 
+
+
     public void setFilteredList(List<MusicList> filteredList) {
-        this.list = filteredList;
+        list = filteredList;
 
         notifyDataSetChanged();
 
@@ -38,7 +41,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.music_adapter_layout, null));
+        return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.music_adapter_layout, null), songChangeListener);
     }
 
     @NonNull
@@ -52,8 +55,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
         } else {
             holder.rootLayout.setBackgroundResource(R.drawable.round_back_10);
         }
-
-
 
         String generationDuration = String.format(Locale.getDefault(), "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(list2.getDuration())), TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(list2.getDuration())) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(list2.getDuration()))));
         holder.title.setText(list2.getTitle());
@@ -84,6 +85,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
         return list.size();
     }
 
+
+
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
         private final RelativeLayout rootLayout;
@@ -91,13 +94,23 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
         private final TextView artist;
         private final TextView musicDuration;
 
-        public MyViewHolder(@NonNull View itemView) {
+        public MyViewHolder(@NonNull View itemView, SongChangeListener songChangeListener) {
             super(itemView);
 
             rootLayout = itemView.findViewById(R.id.rootLayout);
             title = itemView.findViewById(R.id.musicTitle);
             artist = itemView.findViewById(R.id.musicArtist);
             musicDuration = itemView.findViewById(R.id.musicDuration);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (songChangeListener != null) {
+
+
+                    }
+                }
+            });
         }
     }
 }
