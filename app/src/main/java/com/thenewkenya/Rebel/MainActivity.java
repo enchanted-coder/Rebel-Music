@@ -385,23 +385,17 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             endtime.setText(generateDuration);
             isPlaying = true;
 
-
-            if (mp.isPlaying()) {
-                mp.reset();
-            }
-            try {
-                Thread.sleep(100);
-                mp.start();
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
-
-
-
             playerSeekBar.setMax(getTotalDuration);
             playPauseImg.setImageResource(R.drawable.pause_icon);
 
         });
+
+        try {
+            Thread.sleep(100);
+            mediaPlayer.start();
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
 
 
 
