@@ -383,22 +383,15 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             String generateDuration = String.format(Locale.getDefault(), "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(getTotalDuration), TimeUnit.MILLISECONDS.toSeconds(getTotalDuration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(getTotalDuration)));
 
             endtime.setText(generateDuration);
-            if (isPlaying) {
-                isPlaying = false;
-            }
+            isPlaying = true;
 
+
+            if (mp.isPlaying()) {
+                mp.reset();
+            }
             try {
-                Thread.sleep(500);
-                if (mp.isPlaying()) {
-                    mp.pause();
-                }
-                isPlaying = true;
-                try {
-                    Thread.sleep(500);
-                    mp.start();
-                } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                }
+                Thread.sleep(100);
+                mp.start();
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
