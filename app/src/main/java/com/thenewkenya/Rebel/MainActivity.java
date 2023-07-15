@@ -6,6 +6,7 @@ import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioAttributes;
@@ -35,7 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.jetbrains.annotations.NonNls;
-
+import java.security.SecureRandom;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,10 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
     private int loopCounter = 99;
     private int shuffleCounter = 99;
+
+    SecureRandom rand = new SecureRandom();
+
+
 
 
     private void checkReadStoragePermissions() {
@@ -108,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
     }
 
+    // start here
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -117,6 +123,8 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
         com.thenewkenya.Rebel.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
 
         searchView = findViewById(R.id.searchView);
         searchView.clearFocus();
@@ -399,7 +407,6 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
 
 
-
         timer = new Timer();
 
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -426,59 +433,112 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             @Override
             public void onCompletion(MediaPlayer mp) {
 
-                if (loopCounter % 2 != 0) {
+                if (shuffleCounter % 2 != 0) {
 
-                    mediaPlayer.reset();
+                    if (loopCounter % 2 != 0) {
 
-                    timer.purge();
-                    timer.cancel();
+                        mediaPlayer.reset();
 
-                    isPlaying = false;
+                        timer.purge();
+                        timer.cancel();
 
-                    playPauseImg.setImageResource(R.drawable.play_icon);
+                        isPlaying = false;
 
-                    playerSeekBar.setProgress(0);
+                        playPauseImg.setImageResource(R.drawable.play_icon);
 
-                    int nextSongListPosition = currentSongListPosition+1;
+                        playerSeekBar.setProgress(0);
 
-                    if(nextSongListPosition >= musicLists.size()) {
-                        nextSongListPosition = 0;
+                        int nextSongListPosition = currentSongListPosition+1;
+
+                        if(nextSongListPosition >= musicLists.size()) {
+                            nextSongListPosition = 0;
+                        }
+
+                        musicLists.get(currentSongListPosition).setPlaying(false);
+                        musicLists.get(nextSongListPosition).setPlaying(true);
+
+                        musicAdapter.updateList(musicLists);
+
+                        musicRecyclerView.scrollToPosition(nextSongListPosition);
+
+                        onChanged(nextSongListPosition);
+                    } else if (loopCounter % 2 == 0){
+
+                        mediaPlayer.reset();
+
+                        timer.purge();
+                        timer.cancel();
+
+                        isPlaying = false;
+
+
+                        playPauseImg.setImageResource(R.drawable.play_icon);
+                        playerSeekBar.setProgress(0);
+
+                        int nextSongListPosition = currentSongListPosition;
+
+                        musicLists.get(currentSongListPosition).setPlaying(false);
+                        musicLists.get(nextSongListPosition).setPlaying(true);
+
+                        musicAdapter.updateList(musicLists);
+                        musicRecyclerView.scrollToPosition(nextSongListPosition);
+
+                        onChanged(nextSongListPosition);
                     }
 
-                    musicLists.get(currentSongListPosition).setPlaying(false);
-                    musicLists.get(nextSongListPosition).setPlaying(true);
+                } else if (shuffleCounter % 2 == 0){
 
-                    musicAdapter.updateList(musicLists);
+                    if (loopCounter % 2 != 0) {
+                        int upperbound = rand.nextInt(musicLists.size());
+                        mediaPlayer.reset();
 
-                    musicRecyclerView.scrollToPosition(nextSongListPosition);
+                        timer.purge();
+                        timer.cancel();
 
-                    onChanged(nextSongListPosition);
-                } else if (loopCounter % 2 == 0){
+                        isPlaying = false;
 
-                    mediaPlayer.reset();
+                        playPauseImg.setImageResource(R.drawable.play_icon);
 
-                    timer.purge();
-                    timer.cancel();
+                        playerSeekBar.setProgress(0);
 
-                    isPlaying = false;
+                        int nextSongListPosition = rand.nextInt(upperbound);
 
+                        if(nextSongListPosition >= musicLists.size()) {
+                            nextSongListPosition = 0;
+                        }
 
-                    playPauseImg.setImageResource(R.drawable.play_icon);
-                    playerSeekBar.setProgress(0);
+                        musicLists.get(currentSongListPosition).setPlaying(false);
+                        musicLists.get(nextSongListPosition).setPlaying(true);
 
-                    int nextSongListPosition = currentSongListPosition;
+                        musicAdapter.updateList(musicLists);
 
-                    musicLists.get(currentSongListPosition).setPlaying(false);
-                    musicLists.get(nextSongListPosition).setPlaying(true);
+                        musicRecyclerView.scrollToPosition(nextSongListPosition);
 
-                    musicAdapter.updateList(musicLists);
-                    musicRecyclerView.scrollToPosition(nextSongListPosition);
+                        onChanged(nextSongListPosition);
+                    } else if (loopCounter % 2 == 0){
 
-                    onChanged(nextSongListPosition);
+                        mediaPlayer.reset();
+
+                        timer.purge();
+                        timer.cancel();
+
+                        isPlaying = false;
+
+                        playPauseImg.setImageResource(R.drawable.play_icon);
+                        playerSeekBar.setProgress(0);
+
+                        int nextSongListPosition = currentSongListPosition;
+
+                        musicLists.get(currentSongListPosition).setPlaying(false);
+                        musicLists.get(nextSongListPosition).setPlaying(true);
+
+                        musicAdapter.updateList(musicLists);
+                        musicRecyclerView.scrollToPosition(nextSongListPosition);
+
+                        onChanged(nextSongListPosition);
+                    }
+
                 }
-
-
-
 
             }
         });
