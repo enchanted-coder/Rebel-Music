@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioManager;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -56,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     private Timer timer;
     private int currentSongListPosition = 0;
     private MusicAdapter musicAdapter;
+
+    private int loopCounter = 99;
 
 
     private void checkReadStoragePermissions() {
@@ -135,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         final ImageView nextBtn = findViewById(R.id.nextBtn);
         final ImageView prevBtn = findViewById(R.id.previousBtn);
         final ImageView loopBtn = findViewById(R.id.loopBtn);
+
         final ImageView shuffleBtn = findViewById(R.id.shuffleOffBtn);
         playerSeekBar = findViewById(R.id.playerSeekBar);
 
@@ -194,14 +198,26 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             }
         });
 
+        // loop counter
+        // if the loopCounter variable is divisible by 2 then
+        // a loop is implemented
         loopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loopBtn.setImageResource(R.drawable.loop_button_on);
-                // to be implemented
-                // at a future date
+
+                if (loopCounter % 2 != 0) {
+                    loopBtn.setImageResource(R.drawable.loop_button_on);
+                    loopCounter++;
+                } else if (loopCounter % 2 == 0){
+                    loopBtn.setImageResource(R.drawable.loop_button);
+                    loopCounter++;
+                }
+
+                 // increments the loop by 1 value
+
             }
         });
+
 
         shuffleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -321,12 +337,24 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     @Override
     public void onChanged(int position) {
 
-        currentSongListPosition = position;
+        try {
+            currentSongListPosition = position;
+
+            mediaPlayer.pause();
+            mediaPlayer.reset();
+
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        } catch (IndexOutOfBoundsException e) {
+            Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+
+        /*currentSongListPosition = position;
 
         mediaPlayer.pause();
         mediaPlayer.reset();
 
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC); */
 
         new Thread(() -> {
             try {
@@ -378,31 +406,58 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             @Override
             public void onCompletion(MediaPlayer mp) {
 
-                mediaPlayer.reset();
+                if (loopCounter % 2 != 0) {
 
-                timer.purge();
-                timer.cancel();
+                    mediaPlayer.reset();
 
-                isPlaying = false;
+                    timer.purge();
+                    timer.cancel();
 
-                playPauseImg.setImageResource(R.drawable.play_icon);
+                    isPlaying = false;
 
-                playerSeekBar.setProgress(0);
+                    playPauseImg.setImageResource(R.drawable.play_icon);
 
-                int nextSongListPosition = currentSongListPosition+1;
+                    playerSeekBar.setProgress(0);
 
-                if(nextSongListPosition >= musicLists.size()) {
-                    nextSongListPosition = 0;
+                    int nextSongListPosition = currentSongListPosition+1;
+
+                    if(nextSongListPosition >= musicLists.size()) {
+                        nextSongListPosition = 0;
+                    }
+
+                    musicLists.get(currentSongListPosition).setPlaying(false);
+                    musicLists.get(nextSongListPosition).setPlaying(true);
+
+                    musicAdapter.updateList(musicLists);
+
+                    musicRecyclerView.scrollToPosition(nextSongListPosition);
+
+                    onChanged(nextSongListPosition);
+                } else if (loopCounter % 2 == 0){
+
+                    mediaPlayer.reset();
+
+                    timer.purge();
+                    timer.cancel();
+
+                    isPlaying = false;
+
+
+                    playPauseImg.setImageResource(R.drawable.play_icon);
+                    playerSeekBar.setProgress(0);
+
+                    int nextSongListPosition = currentSongListPosition;
+
+                    musicLists.get(currentSongListPosition).setPlaying(false);
+                    musicLists.get(nextSongListPosition).setPlaying(true);
+
+                    musicAdapter.updateList(musicLists);
+                    musicRecyclerView.scrollToPosition(nextSongListPosition);
+
+                    onChanged(nextSongListPosition);
                 }
 
-                musicLists.get(currentSongListPosition).setPlaying(false);
-                musicLists.get(nextSongListPosition).setPlaying(true);
 
-                musicAdapter.updateList(musicLists);
-
-                musicRecyclerView.scrollToPosition(nextSongListPosition);
-
-                onChanged(nextSongListPosition);
             }
         });
     }
