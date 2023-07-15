@@ -8,6 +8,7 @@ import android.content.ContentUris;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.Image;
 import android.media.MediaPlayer;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     private MusicAdapter musicAdapter;
 
     private int loopCounter = 99;
+    private int shuffleCounter = 99;
 
 
     private void checkReadStoragePermissions() {
@@ -208,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                 if (loopCounter % 2 != 0) {
                     loopBtn.setImageResource(R.drawable.loop_button_on);
                     loopCounter++;
+
                 } else if (loopCounter % 2 == 0){
                     loopBtn.setImageResource(R.drawable.loop_button);
                     loopCounter++;
@@ -222,7 +225,15 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         shuffleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shuffleBtn.setImageResource(R.drawable.shuffle_on_icon);
+
+                if (shuffleCounter % 2 != 0) {
+                    shuffleBtn.setImageResource(R.drawable.shuffle_on_icon);
+                    shuffleCounter++;
+
+                } else if (shuffleCounter % 2 == 0){
+                    shuffleBtn.setImageResource(R.drawable.shuffle_off_icon);
+                    shuffleCounter++;
+                }
 
             }
         });
@@ -337,29 +348,29 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     @Override
     public void onChanged(int position) {
 
-        try {
-            currentSongListPosition = position;
 
+        currentSongListPosition = position;
+
+        if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
-            mediaPlayer.reset();
 
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        } catch (IndexOutOfBoundsException e) {
-            Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_LONG).show();
-            e.printStackTrace();
         }
-
-        /*currentSongListPosition = position;
-
-        mediaPlayer.pause();
         mediaPlayer.reset();
 
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC); */
+
+        mediaPlayer.setAudioAttributes(
+                new AudioAttributes
+                        .Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build());
+
+
+        //mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         new Thread(() -> {
             try {
                 mediaPlayer.setDataSource(MainActivity.this, musicLists.get(position).getMusicFile());
-                mediaPlayer.prepare();
+                mediaPlayer.prepareAsync();
             } catch (IOException e) {
                 e.printStackTrace();
                 Toast.makeText(MainActivity.this, "Unable to play track", Toast.LENGTH_SHORT).show();
@@ -372,13 +383,35 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             String generateDuration = String.format(Locale.getDefault(), "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(getTotalDuration), TimeUnit.MILLISECONDS.toSeconds(getTotalDuration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(getTotalDuration)));
 
             endtime.setText(generateDuration);
-            isPlaying = true;
+            if (isPlaying) {
+                isPlaying = false;
+            }
 
-            mp.start();
+            try {
+                Thread.sleep(500);
+                if (mp.isPlaying()) {
+                    mp.pause();
+                }
+                isPlaying = true;
+                try {
+                    Thread.sleep(500);
+                    mp.start();
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+
+
 
             playerSeekBar.setMax(getTotalDuration);
             playPauseImg.setImageResource(R.drawable.pause_icon);
+
         });
+
+
+
 
         timer = new Timer();
 
@@ -456,6 +489,8 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
                     onChanged(nextSongListPosition);
                 }
+
+
 
 
             }
