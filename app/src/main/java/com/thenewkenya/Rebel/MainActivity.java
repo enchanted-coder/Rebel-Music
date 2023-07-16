@@ -1,8 +1,8 @@
 package com.thenewkenya.Rebel;
 
 import android.annotation.SuppressLint;
+import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -22,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
@@ -30,7 +31,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thenewkenya.Rebel.databinding.ActivityMainBinding;
-import android.Manifest;
+
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
@@ -69,15 +70,25 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
     SecureRandom rand = new SecureRandom();
 
-
-
-
     private void checkReadStoragePermissions() {
-        if(checkSelfPermission(Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            showPermissionRationale();
+
+        if (Utils.isTiramisu()) {
+            if (checkSelfPermission(Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                showPermissionRationale();
+            } else {
+                onPermissionGranted();
+            }
+        } else if (Utils.isMarshmallow()) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                showPermissionRationale();
+            } else {
+                onPermissionGranted();
+            }
         } else {
             onPermissionGranted();
         }
+
+
     }
 
     @TargetApi(23)
@@ -86,41 +97,40 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         builder.setIcon(R.drawable.ic_folder);
         builder.setTitle(getString(R.string.app_name));
         builder.setMessage(getString(R.string.perm_rationale));
-        builder.setButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE, getString(android.R.string.ok),
+        builder.setButton(AlertDialog.BUTTON_POSITIVE, getString(android.R.string.ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         final int READ_FILES_CODE = 2588;
-                        requestPermissions(new String[]{Manifest.permission.READ_MEDIA_AUDIO}
-                                , READ_FILES_CODE);
-                        finish();
-                        startActivity(getIntent());
+                        if (Utils.isTiramisu()) {
+                            requestPermissions(new String[]{Manifest.permission.READ_MEDIA_AUDIO}
+                                    , READ_FILES_CODE);
+                        } else {
+                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}
+                                    , READ_FILES_CODE);
+                        }
                     }
                 });
         builder.setCanceledOnTouchOutside(false);
         try {
             builder.show();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
+    @Override
     public void onRequestPermissionResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-
+        if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
             showPermissionRationale();
         } else {
-
             onPermissionGranted();
         }
     }
 
     private void onPermissionGranted() {
-        startActivity(new Intent(this, this.getClass()));
-
+        getMusicFiles();
     }
-
 
 
 
@@ -131,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         super.onCreate(savedInstanceState);
         com.thenewkenya.Rebel.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
 
         searchView = findViewById(R.id.searchView);
         searchView.clearFocus();
@@ -153,13 +162,21 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         musicRecyclerView.setHasFixedSize(true);
         musicRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-            getMusicFiles();
+        if (Utils.isTiramisu()) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                getMusicFiles();
+            } else {
+                checkReadStoragePermissions();
+            }
         } else {
-            checkReadStoragePermissions();
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                getMusicFiles();
+            } else {
+                checkReadStoragePermissions();
+            }
         }
+
+
 
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -384,6 +401,8 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         assert cursor != null;
         cursor.close();
     }
+
+
 
 
 
