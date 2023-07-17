@@ -30,6 +30,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.thenewkenya.Rebel.databinding.ActivityMainBinding;
 
 import android.provider.MediaStore;
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     private Timer timer;
     private int currentSongListPosition = 0;
     private MusicAdapter musicAdapter;
-
+    private FloatingActionButton floatingActionButton;
     private int loopCounter = 99;
     private int shuffleCounter = 99;
 
@@ -144,6 +145,8 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
         searchView = findViewById(R.id.searchView);
         searchView.clearFocus();
+
+        floatingActionButton = findViewById(R.id.shuffleFab);
 
         final CardView playPauseCard = findViewById(R.id.playPauseCard);
         playPauseImg = findViewById(R.id.playPauseImg);
@@ -281,6 +284,25 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                     shuffleCounter++;
                 }
 
+            }
+        });
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int upperbound = musicLists.size()-1;
+
+                if (isPlaying) {
+                    isPlaying = false;
+                    mediaPlayer.pause();
+                    onChanged(rand.nextInt(upperbound));
+                    shuffleBtn.setImageResource(R.drawable.shuffle_on_icon);
+                    shuffleCounter++;
+                }else {
+                    onChanged(rand.nextInt(upperbound));
+                    shuffleBtn.setImageResource(R.drawable.shuffle_on_icon);
+                    shuffleCounter++;
+                }
             }
         });
 
