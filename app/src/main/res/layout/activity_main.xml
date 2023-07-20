@@ -59,20 +59,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/bottomBar" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/shuffleFab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="end"
-        android:layout_marginStart="335dp"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="16dp"
-        android:outlineSpotShadowColor="@color/material_dynamic_neutral50"
-        android:outlineAmbientShadowColor="@color/material_dynamic_neutral50"
-        app:rippleColor="@color/material_dynamic_neutral10"
-        android:backgroundTint="@color/material_dynamic_neutral50"
-        android:layout_marginTop="670dp"
-        app:srcCompat="@drawable/shuffle_off_icon" />
+
     <LinearLayout
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
@@ -151,8 +138,9 @@
                 app:cardUseCompatPadding="true"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="12dp"
-                android:outlineAmbientShadowColor="@color/material_dynamic_neutral50"
-                android:outlineSpotShadowColor="@color/material_dynamic_neutral50" >
+                android:backgroundTint="@color/design_default_color_secondary"
+                android:outlineAmbientShadowColor="@color/design_default_color_secondary"
+                android:outlineSpotShadowColor="@color/design_default_color_secondary" >
 
                 <ImageView
                     android:id="@+id/playPauseImg"
