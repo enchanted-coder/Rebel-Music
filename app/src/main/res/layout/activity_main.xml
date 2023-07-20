@@ -138,9 +138,9 @@
                 app:cardUseCompatPadding="true"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="12dp"
-                android:backgroundTint="@color/design_default_color_secondary"
-                android:outlineAmbientShadowColor="@color/design_default_color_secondary"
-                android:outlineSpotShadowColor="@color/design_default_color_secondary" >
+                android:backgroundTint="@color/design_default_color_secondary_variant"
+                android:outlineAmbientShadowColor="@color/design_default_color_secondary_variant"
+                android:outlineSpotShadowColor="@color/design_default_color_secondary_variant" >
 
                 <ImageView
                     android:id="@+id/playPauseImg"

@@ -409,8 +409,6 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
 
 
-
-
     @Override
     public void onChanged(int position) {
 
@@ -418,9 +416,11 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         currentSongListPosition = position;
 
         if (mediaPlayer.isPlaying()) {
+
             mediaPlayer.pause();
 
         }
+        mediaPlayer.pause();
         mediaPlayer.reset();
 
 
@@ -431,7 +431,6 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                         .build());
 
 
-        //mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         new Thread(() -> {
             try {
