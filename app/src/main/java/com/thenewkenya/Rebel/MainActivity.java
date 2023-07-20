@@ -415,14 +415,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
         currentSongListPosition = position;
 
-        if (mediaPlayer.isPlaying()) {
-
-            mediaPlayer.pause();
-
-        }
-        mediaPlayer.pause();
         mediaPlayer.reset();
-
 
         mediaPlayer.setAudioAttributes(
                 new AudioAttributes
