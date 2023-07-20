@@ -66,73 +66,18 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     private int currentSongListPosition = 0;
     private MusicAdapter musicAdapter;
 
+    // if loop counter is odd number then the loop is off
+    // if loop counter is even number then the loop is on
     private int loopCounter = 99;
+
+    // if shufflecounter is odd number then the shuffle is off
+    // but if shufflecounter is even number is even then shuffle is on
     private int shuffleCounter = 99;
 
+    // Secure random class here is used to generate random number that
+    // will be used with the shuffle method. I use SecureRandom because it is
+    // has less chance of repeating previous number.
     SecureRandom rand = new SecureRandom();
-
-    private void checkReadStoragePermissions() {
-
-        if (Utils.isTiramisu()) {
-            if (checkSelfPermission(Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                showPermissionRationale();
-            } else {
-                onPermissionGranted();
-            }
-        } else if (Utils.isMarshmallow()) {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                showPermissionRationale();
-            } else {
-                onPermissionGranted();
-            }
-        } else {
-            onPermissionGranted();
-        }
-
-
-    }
-
-    @TargetApi(23)
-    private void showPermissionRationale() {
-        AlertDialog builder = new AlertDialog.Builder(this).create();
-        builder.setIcon(R.drawable.ic_folder);
-        builder.setTitle(getString(R.string.app_name));
-        builder.setMessage(getString(R.string.perm_rationale));
-        builder.setButton(AlertDialog.BUTTON_POSITIVE, getString(android.R.string.ok),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        final int READ_FILES_CODE = 2588;
-                        if (Utils.isTiramisu()) {
-                            requestPermissions(new String[]{Manifest.permission.READ_MEDIA_AUDIO}
-                                    , READ_FILES_CODE);
-                        } else {
-                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}
-                                    , READ_FILES_CODE);
-                        }
-                    }
-                });
-        builder.setCanceledOnTouchOutside(false);
-        try {
-            builder.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-            showPermissionRationale();
-        } else {
-            onPermissionGranted();
-        }
-    }
-
-    private void onPermissionGranted() {
-        getMusicFiles();
-    }
-
 
 
 
@@ -145,8 +90,6 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
         searchView = findViewById(R.id.searchView);
         searchView.clearFocus();
-
-
 
         final CardView playPauseCard = findViewById(R.id.playPauseCard);
         playPauseImg = findViewById(R.id.playPauseImg);
@@ -165,6 +108,8 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         musicRecyclerView.setHasFixedSize(true);
         musicRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Android 13+ requires specific storage permissions
+        // Android 12 and earlier use READ_EXTERNAL_STORAGE for all.
         if (Utils.isTiramisu()) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED) {
                 getMusicFiles();
@@ -180,11 +125,10 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         }
 
 
-
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                // runs shuffle counter to check if shuffle button is on
                 if (shuffleCounter % 2 == 0) {
                     int upperbounds = musicLists.size();
                     int nextSongListPosition = rand.nextInt(upperbounds);
@@ -192,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                     if(nextSongListPosition >= musicLists.size()) {
                         nextSongListPosition = 0;
                     }
+
                     isPlaying = false;
                     mediaPlayer.pause();
 
@@ -329,12 +274,16 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             }
         });
 
+        // For the search
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            // we return false here unless we wanted a result only after submitting.
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
             }
 
+            // To display search results everytime a new letter is input
             @Override
             public boolean onQueryTextChange(String newText) {
                 filterList(newText);
@@ -349,9 +298,11 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         List<MusicList> filteredList = new ArrayList<>();
 
         for(MusicList musicList : musicLists) {
+            // to search by title and also to search in lowercase letters
             if (musicList.getTitle().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(musicList);
             }
+            // To search by artist and also to search in lowercase letters
             if (musicList.getArtist().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(musicList);
             }
@@ -449,7 +400,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         });
 
         try {
-            Thread.sleep(100);
+            Thread.sleep(100); // 100ms delay to prevent event state overriding each other and cause a crash
             mediaPlayer.start();
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
@@ -591,6 +542,78 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             }
         });
     }
+
+    private void checkReadStoragePermissions() {
+
+        if (Utils.isTiramisu()) {
+            if (checkSelfPermission(Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                showPermissionRationale();
+            } else {
+                onPermissionGranted();
+            }
+        } else if (Utils.isMarshmallow()) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                showPermissionRationale();
+            } else {
+                onPermissionGranted();
+            }
+        } else {
+            onPermissionGranted();
+        }
+
+
+    }
+
+    @TargetApi(23)
+    private void showPermissionRationale() {
+        AlertDialog builder = new AlertDialog.Builder(this).create();
+        builder.setIcon(R.drawable.ic_folder);
+        builder.setTitle(getString(R.string.app_name));
+        builder.setMessage(getString(R.string.perm_rationale));
+        builder.setButton(AlertDialog.BUTTON_POSITIVE, getString(android.R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        final int READ_FILES_CODE = 2588;
+                        if (Utils.isTiramisu()) {
+                            requestPermissions(new String[]{Manifest.permission.READ_MEDIA_AUDIO}
+                                    , READ_FILES_CODE);
+                        } else {
+                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}
+                                    , READ_FILES_CODE);
+                        }
+
+                        onPermissionGranted();
+                    }
+                });
+        builder.setCanceledOnTouchOutside(false);
+        try {
+            builder.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            showPermissionRationale();
+        } else {
+            onPermissionGranted();
+        }
+    }
+
+    private void onPermissionGranted() {
+        // Im not sure how to implement this yet.
+        // The idea is an app refresh after permissions are granted
+        // but this will have to do for now
+        finish();
+        startActivity(getIntent());
+
+
+    }
+
+
 
 
 }
