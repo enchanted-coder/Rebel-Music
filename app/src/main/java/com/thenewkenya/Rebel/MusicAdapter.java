@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -60,6 +61,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
         holder.title.setText(list2.getTitle());
         holder.artist.setText(list2.getArtist());
         holder.musicDuration.setText(generationDuration);
+        holder.albumArt.setImageURI(list2.getAlbumArt());
+
 
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,6 +95,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
         private final RelativeLayout rootLayout;
         private final TextView title;
         private final TextView artist;
+        private final ImageView albumArt;
         private final TextView musicDuration;
 
         public MyViewHolder(@NonNull View itemView, SongChangeListener songChangeListener) {
@@ -101,7 +105,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
             title = itemView.findViewById(R.id.musicTitle);
             artist = itemView.findViewById(R.id.musicArtist);
             musicDuration = itemView.findViewById(R.id.musicDuration);
-
+            albumArt = itemView.findViewById(R.id.albumArt);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -10,6 +10,14 @@
         android:layout_marginEnd="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
+
+
+        <ImageView
+            android:id="@+id/albumArt"
+            android:layout_width="61dp"
+            android:layout_height="61dp"
+             />
+
         
         <LinearLayout
             android:layout_toStartOf="@+id/musicDuration"
@@ -21,12 +29,16 @@
             android:gravity="center_vertical"
             android:orientation="vertical" >
 
+
+
+
             <TextView
                 android:id="@+id/musicTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                android:layout_marginStart="55dp"
                  />
 
             <TextView
@@ -34,6 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
+                android:layout_marginStart="55dp"
                />
 
         </LinearLayout>

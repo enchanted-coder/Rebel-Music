@@ -8,14 +8,16 @@ public class MusicList {
     private boolean isPlaying;
 
     private Uri musicFile;
+    private Uri albumArt;
 
 
-    public MusicList(String title, String artist, String duration, boolean isPlaying, Uri musicFile) {
+    public MusicList(String title, String artist, String duration, boolean isPlaying, Uri musicFile, Uri albumArt) {
         this.title = title;
         this.artist = artist;
         this.duration = duration;
         this.isPlaying = isPlaying;
         this.musicFile = musicFile;
+        this.albumArt = albumArt;
     }
 
     public String getTitle() {
@@ -38,6 +40,7 @@ public class MusicList {
     public Uri getMusicFile() {
         return musicFile;
     }
+    public Uri getAlbumArt() { return albumArt; }
 
     public void setPlaying(boolean playing) {
         isPlaying = playing;

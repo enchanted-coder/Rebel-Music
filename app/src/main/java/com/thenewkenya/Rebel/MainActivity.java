@@ -33,7 +33,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.thenewkenya.Rebel.databinding.ActivityMainBinding;
 
+import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -324,9 +326,30 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
         ContentResolver contentResolver = getContentResolver();
 
-        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
-        Cursor cursor = contentResolver.query(uri, null, MediaStore.Audio.Media.DATA+" Like?", new String[]{"%.mp3%"}, null);
+
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String[] projection = new String[]{
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.YEAR,
+                MediaStore.Audio.Media.TRACK,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.DISPLAY_NAME,
+                MediaStore.Audio.Media.DURATION,  // error from android side, it works < 29
+                MediaStore.Audio.Media.ALBUM_ID,
+                MediaStore.Audio.Media.ALBUM,
+
+                MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.DATE_MODIFIED,
+                MediaStore.Audio.Media.DATA
+        };
+        String selection = MediaStore.Audio.Media.IS_MUSIC + " = 1";
+        String sortOrder = MediaStore.Audio.Media.DEFAULT_SORT_ORDER;
+
+        //Cursor cursor = contentResolver.query(uri, null, MediaStore.Audio.Media.DATA+" Like?", new String[]{"%.mp3%"}, sortOrder);
+        Cursor cursor = contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null, sortOrder);
+        int albumIdInd = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID);
+        int albumInd = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM);
 
         if(cursor == null) {
             Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
@@ -338,15 +361,20 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                 @SuppressLint("Range") final String getMusicFileName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
                 @SuppressLint("Range") final String getArtistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                 @SuppressLint("Range") long cursorId = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
-
+                String album = cursor.getString(albumInd);
                 Uri musicFileUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, cursorId);
+
+                long albumId = cursor.getLong(albumIdInd);
+                Uri albumArt = Uri.parse("");
+                albumArt = ContentUris.withAppendedId(Uri.parse(getResources().getString(R.string.album_art_dir)), albumId);
                 String getDuration = "00:00";
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     getDuration = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DURATION));
                 }
 
-                final MusicList musicList = new MusicList(getMusicFileName, getArtistName, getDuration, false, musicFileUri);
+
+                final MusicList musicList = new MusicList(getMusicFileName, getArtistName, getDuration, false, musicFileUri, albumArt);
                 musicLists.add(musicList);
             }
 
@@ -564,7 +592,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
     }
 
-    @TargetApi(23)
+
     private void showPermissionRationale() {
         AlertDialog builder = new AlertDialog.Builder(this).create();
         builder.setIcon(R.drawable.ic_folder);
@@ -594,8 +622,11 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         }
     }
 
+
+
     @Override
     public void onRequestPermissionResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
             showPermissionRationale();
         } else {
@@ -607,13 +638,13 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         // Im not sure how to implement this yet.
         // The idea is an app refresh after permissions are granted
         // but this will have to do for now
-        finish();
-        startActivity(getIntent());
+        Intent intent = new Intent(MainActivity.ACTIVITY_SERVICE);
+
+        startActivity(intent);
+
 
 
     }
-
-
 
 
 }
