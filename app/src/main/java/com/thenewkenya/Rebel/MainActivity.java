@@ -114,13 +114,13 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         // Android 12 and earlier use READ_EXTERNAL_STORAGE for all.
         if (Utils.isTiramisu()) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-                getMusicFiles();
+                onPermissionGranted();
             } else {
                 checkReadStoragePermissions();
             }
         } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                getMusicFiles();
+                onPermissionGranted();
             } else {
                 checkReadStoragePermissions();
             }
@@ -611,7 +611,6 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                                     , READ_FILES_CODE);
                         }
 
-                        onPermissionGranted();
                     }
                 });
         builder.setCanceledOnTouchOutside(false);
@@ -635,12 +634,8 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     }
 
     private void onPermissionGranted() {
-        // Im not sure how to implement this yet.
-        // The idea is an app refresh after permissions are granted
-        // but this will have to do for now
-        Intent intent = new Intent(MainActivity.ACTIVITY_SERVICE);
 
-        startActivity(intent);
+        getMusicFiles();
 
 
 
