@@ -54,7 +54,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements SongChangeListener {
-
+    // searchview
     private SearchView searchView;
 
     private final List<MusicList> musicLists = new ArrayList<>();

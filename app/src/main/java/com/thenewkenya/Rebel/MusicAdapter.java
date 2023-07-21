@@ -1,5 +1,6 @@
 package com.thenewkenya.Rebel;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +47,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
 
     @NonNull
     @Override
-    public void onBindViewHolder(@NonNull MusicAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MusicAdapter.MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         MusicList list2 = list.get(position);
 
         if(list2.isPlaying()) {
