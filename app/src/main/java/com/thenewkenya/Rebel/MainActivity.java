@@ -633,6 +633,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         }
     }
 
+    // needs modification
     private void onPermissionGranted() {
 
         getMusicFiles();
