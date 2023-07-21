@@ -14,7 +14,7 @@ Rebel is a beautiful, elegant and intuitive offline music player for Android.
 
 ## Screenshots
 
-![An overview of the interface](https://imgur.com/a/S9iH8lC "Rebel")
+[ScreenShot](https://imgur.com/a/S9iH8lC)
 
 ## Contributing
 
