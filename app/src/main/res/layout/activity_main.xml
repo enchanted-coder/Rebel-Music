@@ -47,17 +47,29 @@
 
     </RelativeLayout>
 
-
-
-
-    <androidx.recyclerview.widget.RecyclerView
-
-        android:id="@+id/musicRecyclerView"
-        android:layout_marginBottom="10dp"
-        android:layout_below="@+id/topBar"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="110dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/bottomBar" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+
+            android:id="@+id/musicRecyclerView"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@+id/topBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottomBar" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+
+
+
+
 
 
     <LinearLayout

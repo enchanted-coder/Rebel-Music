@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.ContentView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.thenewkenya.Rebel.databinding.ActivityMainBinding;
@@ -81,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     // has less chance of repeating previous number.
     SecureRandom rand = new SecureRandom();
 
+    SwipeRefreshLayout swipeRefreshLayout;
+
 
 
     // start here
@@ -110,22 +114,33 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         musicRecyclerView.setHasFixedSize(true);
         musicRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh);
+
         // Android 13+ requires specific storage permissions
         // Android 12 and earlier use READ_EXTERNAL_STORAGE for all.
         if (Utils.isTiramisu()) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-                onPermissionGranted();
+                getMusicFiles();
             } else {
                 checkReadStoragePermissions();
             }
         } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                onPermissionGranted();
+                getMusicFiles();
             } else {
                 checkReadStoragePermissions();
             }
         }
 
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getMusicFiles();
+                swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(MainActivity.this, "refreshed", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -577,16 +592,16 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             if (checkSelfPermission(Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                 showPermissionRationale();
             } else {
-                onPermissionGranted();
+                getMusicFiles();
             }
         } else if (Utils.isMarshmallow()) {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 showPermissionRationale();
             } else {
-                onPermissionGranted();
+                getMusicFiles();
             }
         } else {
-            onPermissionGranted();
+            getMusicFiles();
         }
 
 
@@ -611,6 +626,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                                     , READ_FILES_CODE);
                         }
 
+                        onPermissionGranted();
                     }
                 });
         builder.setCanceledOnTouchOutside(false);
@@ -636,9 +652,9 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     // needs modification
     private void onPermissionGranted() {
 
-        getMusicFiles();
+        Intent intent = new Intent(UI_MODE_SERVICE);
 
-
+        startActivity(intent.cloneFilter());
 
     }
 
