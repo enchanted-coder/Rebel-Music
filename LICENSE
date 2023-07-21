@@ -3,7 +3,7 @@ Version 3, 29 June 2007
 
 Rebel - Offline Music Player for Android
 
-Copyright (C) [year](2023) [Daniel Togey](https://github.com/enchanted-coder)
+Copyright (C) 2023 Daniel Togey
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,4 +16,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program. If not, see [https://www.gnu.org/licenses/](https://www.gnu.org/licenses/).
+along with this program. If not, see https://www.gnu.org/licenses/.
