@@ -16,6 +16,10 @@
             android:id="@+id/albumArt"
             android:layout_width="61dp"
             android:layout_height="61dp"
+            android:padding="6dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+
              />
 
         
@@ -39,6 +43,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginStart="55dp"
+                android:fontFamily="nunito_sans"
                  />
 
             <TextView
@@ -47,6 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:layout_marginStart="55dp"
+                android:fontFamily="nunito_sans_semibold"
                />
 
         </LinearLayout>

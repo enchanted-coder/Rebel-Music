@@ -30,7 +30,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
 
         notifyDataSetChanged();
 
-
     }
 
     public MusicAdapter(List<MusicList> list, Context context) {
@@ -109,10 +108,9 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (songChangeListener != null) {
+                    songChangeListener.onChanged(getAdapterPosition());
 
 
-                    }
                 }
             });
         }
