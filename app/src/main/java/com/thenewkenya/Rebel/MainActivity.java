@@ -588,6 +588,17 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         });
     }
 
+
+   /* public void launchPlayer(View v) {
+        Intent i = new Intent(this, PlayerView);
+        startActivity(i);
+    }
+*/
+
+
+
+    // PERMISSIONS ARE ALL BELOW
+
     private void checkReadStoragePermissions() {
 
         if (Utils.isTiramisu()) {
@@ -657,12 +668,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
     // needs modification
     private void onPermissionGranted() {
-
-        //Intent intent = getIntent();
-        //finish();
-        //recreate();
         getMusicFiles();
-        //startActivity(intent);
 
     }
 
