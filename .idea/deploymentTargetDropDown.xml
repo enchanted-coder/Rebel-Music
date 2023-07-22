@@ -20,18 +20,18 @@
       </entry>
       <entry key="MainActivity">
         <State>
-          <targetSelectedWithDropDown>
+          <runningDeviceTargetSelectedWithDropDown>
             <Target>
-              <type value="QUICK_BOOT_TARGET" />
+              <type value="RUNNING_DEVICE_TARGET" />
               <deviceKey>
                 <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\danny\.android\avd\Pixel_5_API_31.avd" />
+                  <type value="SERIAL_NUMBER" />
+                  <value value="ace941a2" />
                 </Key>
               </deviceKey>
             </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2023-07-20T21:38:56.220382700Z" />
+          </runningDeviceTargetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2023-07-22T16:49:05.864566800Z" />
         </State>
       </entry>
     </value>

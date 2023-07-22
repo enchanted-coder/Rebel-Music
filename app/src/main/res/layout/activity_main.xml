@@ -150,9 +150,9 @@
                 app:cardUseCompatPadding="true"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="12dp"
-                android:backgroundTint="@color/design_default_color_secondary_variant"
-                android:outlineAmbientShadowColor="@color/design_default_color_secondary_variant"
-                android:outlineSpotShadowColor="@color/design_default_color_secondary_variant" >
+                android:backgroundTint="@color/md_theme_light_primary"
+                android:outlineAmbientShadowColor="@color/md_theme_dark_onSecondary"
+                android:outlineSpotShadowColor="@color/md_theme_dark_onSecondary" >
 
                 <ImageView
                     android:id="@+id/playPauseImg"
