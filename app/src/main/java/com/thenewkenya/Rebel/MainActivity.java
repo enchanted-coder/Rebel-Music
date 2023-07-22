@@ -3,6 +3,7 @@ package com.thenewkenya.Rebel;
 import android.annotation.SuppressLint;
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -32,6 +33,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.color.DynamicColors;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.thenewkenya.Rebel.databinding.ActivityMainBinding;
 
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DynamicColors.applyToActivitiesIfAvailable(getApplication());
         com.thenewkenya.Rebel.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -337,7 +340,6 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
     @SuppressLint("Range")
     private void getMusicFiles() {
-
 
         ContentResolver contentResolver = getContentResolver();
 
@@ -586,6 +588,17 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         });
     }
 
+
+   /* public void launchPlayer(View v) {
+        Intent i = new Intent(this, PlayerView);
+        startActivity(i);
+    }
+*/
+
+
+
+    // PERMISSIONS ARE ALL BELOW
+
     private void checkReadStoragePermissions() {
 
         if (Utils.isTiramisu()) {
@@ -618,6 +631,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         final int READ_FILES_CODE = 2588;
+
                         if (Utils.isTiramisu()) {
                             requestPermissions(new String[]{Manifest.permission.READ_MEDIA_AUDIO}
                                     , READ_FILES_CODE);
@@ -626,12 +640,15 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                                     , READ_FILES_CODE);
                         }
 
-                        onPermissionGranted();
+                        recreate();
+
                     }
                 });
+
         builder.setCanceledOnTouchOutside(false);
         try {
             builder.show();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -651,10 +668,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
     // needs modification
     private void onPermissionGranted() {
-
-        Intent intent = new Intent(UI_MODE_SERVICE);
-
-        startActivity(intent.cloneFilter());
+        getMusicFiles();
 
     }
 
