@@ -7,7 +7,6 @@ import android.media.MediaMetadata;
 import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.KeyEvent;
@@ -37,7 +36,7 @@ public class MediaSessionService extends Service {
 
             @Override
             public void onPause() {
-                mediaPlayer.start();
+                mediaPlayer.pause();
             }
         });
         Notification notification =
