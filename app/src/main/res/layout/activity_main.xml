@@ -148,11 +148,11 @@
                 android:layout_height="100dp"
 
                 app:cardUseCompatPadding="true"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="12dp"
-                android:backgroundTint="@color/md_theme_light_primary"
-                android:outlineAmbientShadowColor="@color/md_theme_dark_onSecondary"
-                android:outlineSpotShadowColor="@color/md_theme_dark_onSecondary" >
+                app:cardCornerRadius="15dp"
+                app:cardElevation="11dp"
+                android:backgroundTint="@color/material_dynamic_secondary50"
+                android:outlineAmbientShadowColor="@color/material_dynamic_secondary70"
+                android:outlineSpotShadowColor="@color/material_dynamic_secondary70" >
 
                 <ImageView
                     android:id="@+id/playPauseImg"

@@ -135,13 +135,17 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             }
         }
 
+        ContextCompat.startForegroundService(
+                MainActivity.this.getApplicationContext(),
+                new Intent(MainActivity.this.getApplicationContext(), MediaSessionService.class));
+
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 getMusicFiles();
                 swipeRefreshLayout.setRefreshing(false);
-                Toast.makeText(MainActivity.this, "refreshed", Toast.LENGTH_SHORT).show();
+
             }
         });
 
