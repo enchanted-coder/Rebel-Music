@@ -31,11 +31,11 @@ public class PermissionRationale extends AppCompatActivity {
                 if (Utils.isTiramisu()) {
                     requestPermissions(new String[]{android.Manifest.permission.READ_MEDIA_AUDIO}
                             , READ_FILES_CODE);
-                    recreate();
+                    recreate(); // try finish();
                 } else if (Utils.isMarshmallow()){
                     requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}
                             , READ_FILES_CODE);
-                    recreate();
+                    recreate(); // try finish();
                     
                 }
 
