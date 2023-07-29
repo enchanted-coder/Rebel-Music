@@ -123,13 +123,13 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         // Android 12 and earlier use READ_EXTERNAL_STORAGE for all.
         if (Utils.isTiramisu()) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-                getMusicFiles();
+                onPermissionGranted();
             } else {
                 checkReadStoragePermissions();
             }
         } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                getMusicFiles();
+                onPermissionGranted();
             } else {
                 checkReadStoragePermissions();
             }
@@ -607,21 +607,26 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
         if (Utils.isTiramisu()) {
             if (checkSelfPermission(Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                showPermissionRationale();
+                permissionRationale();
             } else {
-                getMusicFiles();
+                onPermissionGranted();
             }
         } else if (Utils.isMarshmallow()) {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                showPermissionRationale();
+                permissionRationale();
             } else {
-                getMusicFiles();
+                onPermissionGranted();
             }
         } else {
-            getMusicFiles();
+            onPermissionGranted();
         }
 
 
+    }
+
+    private void permissionRationale() {
+        Intent intent = new Intent(this, PermissionRationale.class);
+        startActivity(intent);
     }
 
 
@@ -664,7 +669,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     public void onRequestPermissionResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-            showPermissionRationale();
+            permissionRationale();
         } else {
             onPermissionGranted();
         }
@@ -672,6 +677,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
     // needs modification
     private void onPermissionGranted() {
+
         getMusicFiles();
 
     }
