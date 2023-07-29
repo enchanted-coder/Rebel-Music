@@ -8,23 +8,13 @@
 
     tools:context=".PermissionRationale">
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBar"
         android:paddingBottom="3dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchView"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="3dp"
-            android:background="@drawable/search_view_bg"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:queryHint="Search Here ..." />
+
 
         <androidx.appcompat.widget.ActionMenuView
             android:id="@+id/menuBtn"
@@ -41,33 +31,28 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="400dp"
+    <TextView
+        android:id="@+id/textViewMessage"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/in_order_to_see_your_music_you_need_to_enable_read_storage_permissions"
+        android:textSize="20sp"
+        android:textColor="@color/material_dynamic_secondary70" />
+
+    <Button
+        android:id="@+id/reqOk"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewMessage"
+        android:layout_centerHorizontal="false"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="90dp"
 
-        <TextView
-            android:id="@+id/rationaleOk"
-            android:layout_width="190dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/reqOk"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="@string/in_order_to_see_your_music_you_need_to_enable_permissions" />
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="@string/grant_permissions"
+        android:textSize="18sp"
 
-
-        <Button
-            android:id="@+id/reqOk"
-            android:layout_marginStart="35dp"
-            app:layout_constraintTop_toBottomOf="@+id/rationaleOk"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/ok" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-
+        android:background="@drawable/button_background" />
 </RelativeLayout>

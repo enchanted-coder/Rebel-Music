@@ -5,4 +5,8 @@
     <string name="in_order_to_see_your_music_you_need_to_enable_read_permissions">In order to see your music you need to enable read permissions.</string>
     <string name="in_order_to_see_your_music_you_need_to_enable_permissions">In order to see your music, you need to enable permissions</string>
     <string name="ok">OK</string>
+    <string name="Okay">OK</string>
+    <string name="perm_rationale_text">Hello, this is a beautiful UI text!</string>
+    <string name="in_order_to_see_your_music_you_need_to_enable_read_storage_permissions">In order to see your music you need to enable read storage permissions</string>
+    <string name="grant_permissions">Grant Permissions</string>
 </resources>
