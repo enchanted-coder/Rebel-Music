@@ -101,12 +101,14 @@ public class MediaNotificationManager {
                                         MediaButtonReceiver.buildMediaButtonPendingIntent(
                                                 mService,
                                                 PlaybackStateCompat.ACTION_STOP)))
-                .setColor(ContextCompat.getColor(mService, R.color.md_theme_dark_onSurface))
+                .setColor(ContextCompat.getColor(mService, com.google.android.material.R.color.material_dynamic_secondary50))
                 .setSmallIcon(R.drawable.play_icon)
+
                 // Pending intent that is fired when user clicks on notification.
                 .setContentIntent(createContentIntent())
                 // Title - Usually Song name.
                 .setContentTitle(description.getTitle())
+                .setContentText("artist")
                 // When notification is deleted (when playback is paused and notification can be
                 // deleted) fire MediaButtonPendingIntent with ACTION_PAUSE.
                 .setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(
