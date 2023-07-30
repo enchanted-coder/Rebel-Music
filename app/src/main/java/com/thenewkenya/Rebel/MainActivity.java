@@ -364,10 +364,11 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                 MediaStore.Audio.Media.DATE_MODIFIED,
                 MediaStore.Audio.Media.DATA
         };
-        String selection = MediaStore.Audio.Media.IS_MUSIC + " = 1";
+        String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0 AND (" +
+                MediaStore.Audio.Media.DATA + " LIKE '%.mp3' OR " +
+                MediaStore.Audio.Media.DATA + " LIKE '%.flac')";
         String sortOrder = MediaStore.Audio.Media.DEFAULT_SORT_ORDER;
 
-        //Cursor cursor = contentResolver.query(uri, null, MediaStore.Audio.Media.DATA+" Like?", new String[]{"%.mp3%"}, sortOrder);
         Cursor cursor = contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null, sortOrder);
         int albumIdInd = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID);
         int albumInd = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM);
