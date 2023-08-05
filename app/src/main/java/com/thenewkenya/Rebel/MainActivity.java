@@ -253,16 +253,41 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
     void updateBottomCardView(MusicList musicList) {
         bottomCardView.setVisibility(View.VISIBLE);
+
+        ImageView album_art = bottomCardView.findViewById(R.id.album_art);
         TextView textViewTitle = bottomCardView.findViewById(R.id.textViewTitle);
         TextView textViewArtist = bottomCardView.findViewById(R.id.textViewArtist);
+        ImageView btn_play_pause = bottomCardView.findViewById(R.id.btn_play_pause);
+
         textViewTitle.setText(musicList.getTitle());
         textViewArtist.setText(musicList.getArtist());
+        album_art.setImageURI(musicList.getAlbumArt());
+
+        btn_play_pause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isPlaying) {
+                    btn_play_pause.setImageResource(R.drawable.play_icon);
+                    mediaPlayer.pause();
+                }
+
+
+
+
+            }
+        });
+
+
     }
 
 
 
     @Override
     public void onChanged(int position) {
+        ImageView btn_play_pause = bottomCardView.findViewById(R.id.btn_play_pause);
+
+        btn_play_pause.setImageResource(R.drawable.pause_icon);
+
 
         if (position >=0 && position < musicLists.size()) {
             MusicList musicList = musicLists.get(position);
