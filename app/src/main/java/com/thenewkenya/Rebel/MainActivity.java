@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.color.DynamicColors;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.thenewkenya.Rebel.databinding.ActivityMainBinding;
 
 import android.os.Handler;
@@ -65,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     private MediaPlayer mediaPlayer;
 
     private boolean isPlaying = false;
+
+    private LinearProgressIndicator linearProgressIndicator;
 
     private Timer timer;
     private int currentSongListPosition = 0;
@@ -105,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
 
         mediaPlayer = new MediaPlayer();
+
 
         musicRecyclerView = findViewById(R.id.musicRecyclerView);
         musicRecyclerView.setHasFixedSize(true);
@@ -260,30 +264,54 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         TextView textViewTitle = bottomCardView.findViewById(R.id.textViewTitle);
         TextView textViewArtist = bottomCardView.findViewById(R.id.textViewArtist);
         ImageView btn_play_pause = bottomCardView.findViewById(R.id.btn_play_pause);
+        LinearProgressIndicator media_player_bar_progress_indicator = bottomCardView.findViewById(R.id.media_player_bar_progress_indicator);
 
         textViewTitle.setText(musicList.getTitle());
         textViewArtist.setText(musicList.getArtist());
         album_art.setImageURI(musicList.getAlbumArt());
 
-        btn_play_pause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isPlaying) {
-                    pausePlayback();
-                } else {
-                    startPlayback();
-                }
-
-
-
-
+        btn_play_pause.setOnClickListener(view -> {
+            if (isPlaying) {
+                pausePlayback();
+            } else {
+                startPlayback();
             }
         });
 
+        Handler handler = new Handler();
 
+        Runnable updateLinearProgressIndicator = new Runnable() {
+            @Override
+            public void run() {
+                int currentPosition = mediaPlayer.getCurrentPosition();
+                linearProgressIndicator.setProgress(currentPosition);
 
+                handler.postDelayed(this, 1000);
+            }
+        };
     }
+
+    Handler handler = new Handler();
+
+    Runnable updateLinearProgressIndicator = new Runnable() {
+        @Override
+        public void run() {
+            int currentPosition = mediaPlayer.getCurrentPosition();
+            linearProgressIndicator.setProgress(currentPosition);
+
+            handler.postDelayed(this, 1000);
+        }
+    };
+    private void startUpdatingProgressBar() {
+        handler.postDelayed(updateLinearProgressIndicator, 0);
+    }
+
+    private void stopUpdatingProgressBar() {
+        handler.removeCallbacks(updateLinearProgressIndicator);
+    }
+
     private void startPlayback() {
+        //startUpdatingProgressBar();
         ImageView btn_play_pause = bottomCardView.findViewById(R.id.btn_play_pause);
         mediaPlayer.start();
         isPlaying = true;
@@ -291,11 +319,14 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     }
 
     private void pausePlayback() {
+        //stopUpdatingProgressBar();
         ImageView btn_play_pause = bottomCardView.findViewById(R.id.btn_play_pause);
         mediaPlayer.pause();
         isPlaying = false;
         btn_play_pause.setImageResource(R.drawable.play_icon);
     }
+
+
 
 
 
