@@ -267,8 +267,9 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             @Override
             public void onClick(View v) {
                 if (isPlaying) {
-                    btn_play_pause.setImageResource(R.drawable.play_icon);
-                    mediaPlayer.pause();
+                    pausePlayback();
+                } else {
+                    startPlayback();
                 }
 
 
@@ -278,6 +279,20 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         });
 
 
+
+    }
+    private void startPlayback() {
+        ImageView btn_play_pause = bottomCardView.findViewById(R.id.btn_play_pause);
+        mediaPlayer.start();
+        isPlaying = true;
+        btn_play_pause.setImageResource(R.drawable.pause_icon);
+    }
+
+    private void pausePlayback() {
+        ImageView btn_play_pause = bottomCardView.findViewById(R.id.btn_play_pause);
+        mediaPlayer.pause();
+        isPlaying = false;
+        btn_play_pause.setImageResource(R.drawable.play_icon);
     }
 
 
