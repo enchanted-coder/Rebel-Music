@@ -128,11 +128,11 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             }
         }
 
-        /*if (Utils.isTiramisu()) {
+        if (Utils.isTiramisu()) {
             ContextCompat.startForegroundService(
                     MainActivity.this.getApplicationContext(),
                     new Intent(MainActivity.this.getApplicationContext(), MediaSessionService.class));
-        }*/
+        }
 
 
 
