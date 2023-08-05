@@ -128,11 +128,13 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             }
         }
 
+        // to be worked on later
+        /*
         if (Utils.isTiramisu()) {
             ContextCompat.startForegroundService(
                     MainActivity.this.getApplicationContext(),
                     new Intent(MainActivity.this.getApplicationContext(), MediaSessionService.class));
-        }
+        }*/
 
 
 
@@ -186,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
     @SuppressLint("Range")
     private void getMusicFiles() {
-
+        bottomCardView.setVisibility(View.INVISIBLE);
         ContentResolver contentResolver = getContentResolver();
 
 
