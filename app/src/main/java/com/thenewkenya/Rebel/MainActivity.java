@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     }
 
     private void startPlayback() {
-        //startUpdatingProgressBar();
+        startUpdatingProgressBar();
         ImageView btn_play_pause = bottomCardView.findViewById(R.id.btn_play_pause);
         mediaPlayer.start();
         isPlaying = true;
@@ -319,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     }
 
     private void pausePlayback() {
-        //stopUpdatingProgressBar();
+        stopUpdatingProgressBar();
         ImageView btn_play_pause = bottomCardView.findViewById(R.id.btn_play_pause);
         mediaPlayer.pause();
         isPlaying = false;
@@ -436,6 +436,12 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mediaPlayer.release();
     }
 
 
