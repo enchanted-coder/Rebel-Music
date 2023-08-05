@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         TextView textViewTitle = bottomCardView.findViewById(R.id.textViewTitle);
         TextView textViewArtist = bottomCardView.findViewById(R.id.textViewArtist);
         ImageView btn_play_pause = bottomCardView.findViewById(R.id.btn_play_pause);
-        LinearProgressIndicator media_player_bar_progress_indicator = bottomCardView.findViewById(R.id.media_player_bar_progress_indicator);
+        //LinearProgressIndicator media_player_bar_progress_indicator = bottomCardView.findViewById(R.id.media_player_bar_progress_indicator);
 
         textViewTitle.setText(musicList.getTitle());
         textViewArtist.setText(musicList.getArtist());
@@ -278,17 +278,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             }
         });
 
-        Handler handler = new Handler();
 
-        Runnable updateLinearProgressIndicator = new Runnable() {
-            @Override
-            public void run() {
-                int currentPosition = mediaPlayer.getCurrentPosition();
-                linearProgressIndicator.setProgress(currentPosition);
-
-                handler.postDelayed(this, 1000);
-            }
-        };
     }
 
     Handler handler = new Handler();
@@ -296,8 +286,9 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     Runnable updateLinearProgressIndicator = new Runnable() {
         @Override
         public void run() {
+            LinearProgressIndicator media_player_bar_progress_indicator = bottomCardView.findViewById(R.id.media_player_bar_progress_indicator);
             int currentPosition = mediaPlayer.getCurrentPosition();
-            linearProgressIndicator.setProgress(currentPosition);
+            media_player_bar_progress_indicator.setProgress(currentPosition);
 
             handler.postDelayed(this, 1000);
         }
@@ -333,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     @Override
     public void onChanged(int position) {
         ImageView btn_play_pause = bottomCardView.findViewById(R.id.btn_play_pause);
-
+        startUpdatingProgressBar();
         btn_play_pause.setImageResource(R.drawable.pause_icon);
 
 
@@ -341,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             MusicList musicList = musicLists.get(position);
             updateBottomCardView(musicList);
         }
-
+        linearProgressIndicator = findViewById(R.id.media_player_bar_progress_indicator);
 
         currentSongListPosition = position;
 
@@ -357,6 +348,12 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
 
         new Thread(() -> {
+            while(mediaPlayer.isPlaying()) {
+                int currentPosition = mediaPlayer.getCurrentPosition();
+                runOnUiThread(() -> {
+                    linearProgressIndicator.setProgress(currentPosition);
+                });
+            }
             try {
                 mediaPlayer.setDataSource(MainActivity.this, musicLists.get(position).getMusicFile());
                 mediaPlayer.prepareAsync();
@@ -367,6 +364,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         }).start();
 
         mediaPlayer.setOnPreparedListener(mp -> {
+            linearProgressIndicator.setMax(mediaPlayer.getDuration());
             final int getTotalDuration = mp.getDuration();
 
             String generateDuration = String.format(Locale.getDefault(), "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(getTotalDuration), TimeUnit.MILLISECONDS.toSeconds(getTotalDuration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(getTotalDuration)));
