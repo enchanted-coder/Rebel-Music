@@ -31,7 +31,6 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.color.DynamicColors;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -64,10 +63,9 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     private final List<MusicList> musicLists = new ArrayList<>();
     private RecyclerView musicRecyclerView;
     private MediaPlayer mediaPlayer;
-    private TextView endtime, startTime;
+
     private boolean isPlaying = false;
-    private SeekBar playerSeekBar;
-    private ImageView playPauseImg;
+
     private Timer timer;
     private int currentSongListPosition = 0;
     private MusicAdapter musicAdapter;
@@ -85,7 +83,9 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     // has less chance of repeating previous number.
     SecureRandom rand = new SecureRandom();
 
-    SwipeRefreshLayout swipeRefreshLayout;
+    private CardView bottomCardView;
+
+
 
 
 
@@ -100,24 +100,17 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         searchView = findViewById(R.id.searchView);
         searchView.clearFocus();
 
-        final CardView playPauseCard = findViewById(R.id.playPauseCard);
-        playPauseImg = findViewById(R.id.playPauseImg);
+        bottomCardView = findViewById(R.id.bottomCardView);
 
-        final ImageView nextBtn = findViewById(R.id.nextBtn);
-        final ImageView prevBtn = findViewById(R.id.previousBtn);
-        final ImageView loopBtn = findViewById(R.id.loopBtn);
-        final ImageView shuffleBtn = findViewById(R.id.shuffleOffBtn);
 
-        playerSeekBar = findViewById(R.id.playerSeekBar);
-        startTime = findViewById(R.id.startTime);
-        endtime = findViewById(R.id.endTime);
+
         mediaPlayer = new MediaPlayer();
 
         musicRecyclerView = findViewById(R.id.musicRecyclerView);
         musicRecyclerView.setHasFixedSize(true);
         musicRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        swipeRefreshLayout = findViewById(R.id.swipe_refresh);
+
 
         // Android 13+ requires specific storage permissions
         // Android 12 and earlier use READ_EXTERNAL_STORAGE for all.
@@ -135,168 +128,17 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             }
         }
 
-        ContextCompat.startForegroundService(
-                MainActivity.this.getApplicationContext(),
-                new Intent(MainActivity.this.getApplicationContext(), MediaSessionService.class));
-
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getMusicFiles();
-                swipeRefreshLayout.setRefreshing(false);
-
-            }
-        });
-
-        nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // runs shuffle counter to check if shuffle button is on
-                if (shuffleCounter % 2 == 0) {
-                    int upperbounds = musicLists.size();
-                    int nextSongListPosition = rand.nextInt(upperbounds);
-
-                    if(nextSongListPosition >= musicLists.size()) {
-                        nextSongListPosition = 0;
-                    }
-
-                    isPlaying = false;
-                    mediaPlayer.pause();
-
-                    musicLists.get(currentSongListPosition).setPlaying(false);
-                    musicLists.get(nextSongListPosition).setPlaying(true);
-
-                    musicAdapter.updateList(musicLists);
-                    musicRecyclerView.scrollToPosition(nextSongListPosition);
-
-                    onChanged(nextSongListPosition);
-
-
-                } else if (shuffleCounter % 2 != 0){
-
-                    int nextSongListPosition = currentSongListPosition+1;
-
-                    if(nextSongListPosition >= musicLists.size()) {
-                        nextSongListPosition = 0;
-                    }
-                    isPlaying = false;
-                    mediaPlayer.pause();
-
-                    musicLists.get(currentSongListPosition).setPlaying(false);
-                    musicLists.get(nextSongListPosition).setPlaying(true);
-
-                    musicAdapter.updateList(musicLists);
-                    musicRecyclerView.scrollToPosition(nextSongListPosition);
-
-                    onChanged(nextSongListPosition);
-
-                }
-
-
-            }
-        });
-
-        prevBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int prevSongListPosition = currentSongListPosition-1;
-
-                if(prevSongListPosition < 0) {
-                    prevSongListPosition = musicLists.size()-1;
-                }
-                isPlaying = false;
-                mediaPlayer.pause();
-
-                musicLists.get(currentSongListPosition).setPlaying(false);
-                musicLists.get(prevSongListPosition).setPlaying(true);
-
-                musicAdapter.updateList(musicLists);
-                musicRecyclerView.scrollToPosition(prevSongListPosition);
-
-                onChanged(prevSongListPosition);
-            }
-        });
-
-        // loop counter
-        // if the loopCounter variable is divisible by 2 then
-        // a loop is implemented
-        loopBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (loopCounter % 2 != 0) {
-                    loopBtn.setImageResource(R.drawable.loop_button_on);
-                    loopCounter++;
-
-                } else if (loopCounter % 2 == 0){
-                    loopBtn.setImageResource(R.drawable.loop_button);
-                    loopCounter++;
-                }
-
-                 // increments the loop by 1 value
-
-            }
-        });
-
-
-        shuffleBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (shuffleCounter % 2 != 0) {
-                    shuffleBtn.setImageResource(R.drawable.shuffle_on_icon);
-                    shuffleCounter++;
-
-                } else if (shuffleCounter % 2 == 0){
-                    shuffleBtn.setImageResource(R.drawable.shuffle_off_icon);
-                    shuffleCounter++;
-                }
-
-            }
-        });
+        /*if (Utils.isTiramisu()) {
+            ContextCompat.startForegroundService(
+                    MainActivity.this.getApplicationContext(),
+                    new Intent(MainActivity.this.getApplicationContext(), MediaSessionService.class));
+        }*/
 
 
 
-        playPauseCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                if(isPlaying) {
-                    isPlaying = false;
-                    mediaPlayer.pause();
-                    playPauseImg.setImageResource(R.drawable.play_icon);
-                } else {
-                    isPlaying = true;
-                    mediaPlayer.start();
-                    playPauseImg.setImageResource(R.drawable.pause_icon);
-                }
-            }
-        });
 
-        playerSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-                if(fromUser) {
-                    if(isPlaying) {
-                        mediaPlayer.seekTo(progress);
-                    } else {
-                        mediaPlayer.seekTo(0);
-                    }
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
 
         // For the search
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -398,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
                 final MusicList musicList = new MusicList(getMusicFileName, getArtistName, getDuration, false, musicFileUri, albumArt);
                 musicLists.add(musicList);
+
             }
 
             musicAdapter = new MusicAdapter(musicLists, MainActivity.this);
@@ -408,13 +251,27 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         cursor.close();
     }
 
+    void updateBottomCardView(MusicList musicList) {
+        bottomCardView.setVisibility(View.VISIBLE);
+        TextView textViewTitle = bottomCardView.findViewById(R.id.textViewTitle);
+        TextView textViewArtist = bottomCardView.findViewById(R.id.textViewArtist);
+        textViewTitle.setText(musicList.getTitle());
+        textViewArtist.setText(musicList.getArtist());
+    }
+
 
 
     @Override
     public void onChanged(int position) {
 
+        if (position >=0 && position < musicLists.size()) {
+            MusicList musicList = musicLists.get(position);
+            updateBottomCardView(musicList);
+        }
+
 
         currentSongListPosition = position;
+
 
         mediaPlayer.reset();
 
@@ -441,11 +298,10 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
             String generateDuration = String.format(Locale.getDefault(), "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(getTotalDuration), TimeUnit.MILLISECONDS.toSeconds(getTotalDuration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(getTotalDuration)));
 
-            endtime.setText(generateDuration);
+
             isPlaying = true;
 
-            playerSeekBar.setMax(getTotalDuration);
-            playPauseImg.setImageResource(R.drawable.pause_icon);
+
 
         });
 
@@ -470,9 +326,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
                         String generateDuration = String.format(Locale.getDefault(), "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(getCurrentDuration), TimeUnit.MILLISECONDS.toSeconds(getCurrentDuration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(getCurrentDuration)));
 
-                        playerSeekBar.setProgress(getCurrentDuration);
 
-                        startTime.setText(generateDuration);
                     }
                 });
             }
@@ -481,113 +335,31 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
+                mediaPlayer.reset();
 
-                if (shuffleCounter % 2 != 0) {
+                timer.purge();
+                timer.cancel();
 
-                    if (loopCounter % 2 != 0) {
-
-                        mediaPlayer.reset();
-
-                        timer.purge();
-                        timer.cancel();
-
-                        isPlaying = false;
-
-                        playPauseImg.setImageResource(R.drawable.play_icon);
-
-                        playerSeekBar.setProgress(0);
-
-                        int nextSongListPosition = currentSongListPosition+1;
-
-                        if(nextSongListPosition >= musicLists.size()) {
-                            nextSongListPosition = 0;
-                        }
-
-                        musicLists.get(currentSongListPosition).setPlaying(false);
-                        musicLists.get(nextSongListPosition).setPlaying(true);
-
-                        musicAdapter.updateList(musicLists);
-
-                        musicRecyclerView.scrollToPosition(nextSongListPosition);
-
-                        onChanged(nextSongListPosition);
-                    } else if (loopCounter % 2 == 0){
-
-                        mediaPlayer.reset();
-
-                        timer.purge();
-                        timer.cancel();
-
-                        isPlaying = false;
+                isPlaying = false;
 
 
-                        playPauseImg.setImageResource(R.drawable.play_icon);
-                        playerSeekBar.setProgress(0);
 
-                        int nextSongListPosition = currentSongListPosition;
+                int nextSongListPosition = currentSongListPosition+1;
 
-                        musicLists.get(currentSongListPosition).setPlaying(false);
-                        musicLists.get(nextSongListPosition).setPlaying(true);
-
-                        musicAdapter.updateList(musicLists);
-                        musicRecyclerView.scrollToPosition(nextSongListPosition);
-
-                        onChanged(nextSongListPosition);
-                    }
-
-                } else if (shuffleCounter % 2 == 0){
-
-                    if (loopCounter % 2 != 0) {
-                        int upperbound = rand.nextInt(musicLists.size());
-                        mediaPlayer.reset();
-
-                        timer.purge();
-                        timer.cancel();
-
-                        isPlaying = false;
-
-                        playPauseImg.setImageResource(R.drawable.play_icon);
-
-                        playerSeekBar.setProgress(0);
-
-                        int nextSongListPosition = rand.nextInt(upperbound);
-
-                        if(nextSongListPosition >= musicLists.size()) {
-                            nextSongListPosition = 0;
-                        }
-
-                        musicLists.get(currentSongListPosition).setPlaying(false);
-                        musicLists.get(nextSongListPosition).setPlaying(true);
-
-                        musicAdapter.updateList(musicLists);
-
-                        musicRecyclerView.scrollToPosition(nextSongListPosition);
-
-                        onChanged(nextSongListPosition);
-                    } else if (loopCounter % 2 == 0){
-
-                        mediaPlayer.reset();
-
-                        timer.purge();
-                        timer.cancel();
-
-                        isPlaying = false;
-
-                        playPauseImg.setImageResource(R.drawable.play_icon);
-                        playerSeekBar.setProgress(0);
-
-                        int nextSongListPosition = currentSongListPosition;
-
-                        musicLists.get(currentSongListPosition).setPlaying(false);
-                        musicLists.get(nextSongListPosition).setPlaying(true);
-
-                        musicAdapter.updateList(musicLists);
-                        musicRecyclerView.scrollToPosition(nextSongListPosition);
-
-                        onChanged(nextSongListPosition);
-                    }
-
+                if(nextSongListPosition >= musicLists.size()) {
+                    nextSongListPosition = 0;
                 }
+
+                musicLists.get(currentSongListPosition).setPlaying(false);
+                musicLists.get(nextSongListPosition).setPlaying(true);
+
+                musicAdapter.updateList(musicLists);
+
+                musicRecyclerView.scrollToPosition(nextSongListPosition);
+
+                onChanged(nextSongListPosition);
+
+
 
             }
         });
@@ -682,6 +454,8 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         getMusicFiles();
 
     }
+
+
 
 
 }

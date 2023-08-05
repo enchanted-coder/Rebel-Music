@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -63,11 +64,15 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
         holder.musicDuration.setText(generationDuration);
         holder.albumArt.setImageURI(list2.getAlbumArt());
 
+        holder.itemView.setOnClickListener(v -> {
+            ((MainActivity)
+            v.getContext()).updateBottomCardView(list2);
+        });
+
 
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 list.get(playingPosition).setPlaying(false);
                 list2.setPlaying(true);
 
@@ -77,6 +82,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
             }
         });
     }
+
+
 
     public void updateList(List<MusicList> List) {
         this.list = list;
