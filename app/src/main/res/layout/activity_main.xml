@@ -70,7 +70,8 @@
             app:cardCornerRadius="6dp"
             android:elevation="0dp"
             app:cardElevation="0dp"
-            >
+            android:clickable="true"
+            android:focusable="true">
 
             <FrameLayout
                 android:id="@+id/media_player_bar_bg"
