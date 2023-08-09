@@ -14,7 +14,7 @@
         android:paddingBottom="3dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/musicRecyclerView"
+        app:layout_constraintBottom_toTopOf="parent"
         >
 
         <androidx.appcompat.widget.SearchView
@@ -50,6 +50,7 @@
         android:layout_below="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+
          />
 
 
