@@ -2,6 +2,8 @@ package com.thenewkenya.Rebel;
 
 import android.annotation.SuppressLint;
 import android.Manifest;
+
+import androidx.core.view.GestureDetectorCompat;
 import androidx.palette.graphics.Palette;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -43,6 +45,7 @@ import com.thenewkenya.Rebel.databinding.ActivityMainBinding;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -93,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     private CardView bottomCardView;
     private ImageView albumArtImageView;
 
-
+    private GestureDetectorCompat gestureDetector;
 
 
 
@@ -110,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
         bottomCardView = findViewById(R.id.bottomCardView);
 
-
+        gestureDetector = new GestureDetectorCompat(this, new MyGestureListener(this));
 
         mediaPlayer = new MediaPlayer();
 
@@ -147,7 +150,14 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
 
 
+        bottomCardView.setOnTouchListener(new View.OnTouchListener() {
 
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                gestureDetector.onTouchEvent(event);
+                return true;
+            }
+        });
 
 
 
@@ -446,17 +456,74 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        // Pass touch events to the gesture detector
+        gestureDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
+    void switchToPreviousSong() {
+        mediaPlayer.reset();
+
+        timer.purge();
+        timer.cancel();
+
+        isPlaying = false;
+
+
+
+        int nextSongListPosition = currentSongListPosition-1;
+
+        if(nextSongListPosition >= musicLists.size()) {
+            nextSongListPosition = 0;
+        } else if (nextSongListPosition == -1) {
+            nextSongListPosition = musicLists.size()-1;
+        }
+
+        musicLists.get(currentSongListPosition).setPlaying(false);
+        musicLists.get(nextSongListPosition).setPlaying(true);
+
+        musicAdapter.updateList(musicLists);
+
+        musicRecyclerView.scrollToPosition(nextSongListPosition);
+
+        onChanged(nextSongListPosition);
+    }
+
+    void switchToNextSong() {
+        mediaPlayer.reset();
+
+        timer.purge();
+        timer.cancel();
+
+        isPlaying = false;
+
+
+
+        int nextSongListPosition = currentSongListPosition+1;
+
+        if(nextSongListPosition >= musicLists.size()) {
+            nextSongListPosition = 0;
+        }
+
+        musicLists.get(currentSongListPosition).setPlaying(false);
+        musicLists.get(nextSongListPosition).setPlaying(true);
+
+        musicAdapter.updateList(musicLists);
+
+        musicRecyclerView.scrollToPosition(nextSongListPosition);
+
+        onChanged(nextSongListPosition);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mediaPlayer.release();
     }
 
 
-   /* public void launchPlayer(View v) {
-        Intent i = new Intent(this, PlayerView);
-        startActivity(i);
-    }
-*/
+
 
 
 
