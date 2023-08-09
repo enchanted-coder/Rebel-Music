@@ -38,6 +38,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.color.DynamicColors;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.thenewkenya.Rebel.databinding.ActivityMainBinding;
@@ -58,6 +59,8 @@ import org.jetbrains.annotations.NonNls;
 import java.security.SecureRandom;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
@@ -67,8 +70,12 @@ import java.util.concurrent.TimeUnit;
 public class MainActivity extends AppCompatActivity implements SongChangeListener {
     // searchview
     private SearchView searchView;
-
-    private final List<MusicList> musicLists = new ArrayList<>();
+    // List of all songs
+    private List<MusicList> musicLists;
+    private List<MusicList> shuffledMusicList;
+    private int currentIndex = -1;
+    private FloatingActionButton shuffleButton;
+    private boolean isShuffling = false;
     private RecyclerView musicRecyclerView;
     private MediaPlayer mediaPlayer;
 
@@ -80,18 +87,6 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     private int currentSongListPosition = 0;
     private MusicAdapter musicAdapter;
 
-    // if loop counter is odd number then the loop is off
-    // if loop counter is even number then the loop is on
-    private int loopCounter = 99;
-
-    // if shufflecounter is odd number then the shuffle is off
-    // but if shufflecounter is even number is even then shuffle is on
-    private int shuffleCounter = 99;
-
-    // Secure random class here is used to generate random number that
-    // will be used with the shuffle method. I use SecureRandom because it is
-    // has less chance of repeating previous number.
-    SecureRandom rand = new SecureRandom();
 
     private CardView bottomCardView;
     private ImageView albumArtImageView;
@@ -111,6 +106,9 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         searchView = findViewById(R.id.searchView);
         searchView.clearFocus();
 
+        musicLists = new ArrayList<>();
+        shuffledMusicList = new ArrayList<>(musicLists);
+
         bottomCardView = findViewById(R.id.bottomCardView);
 
         gestureDetector = new GestureDetectorCompat(this, new MyGestureListener(this));
@@ -122,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         musicRecyclerView.setHasFixedSize(true);
         musicRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
+        shuffleButton = findViewById(R.id.shuffleButton);
 
         // Android 13+ requires specific storage permissions
         // Android 12 and earlier use READ_EXTERNAL_STORAGE for all.
@@ -148,7 +146,16 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                     new Intent(MainActivity.this.getApplicationContext(), MediaSessionService.class));
         }*/
 
-
+        shuffleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isShuffling) {
+                    startShuffle();
+                } else {
+                    stopShuffle();
+                }
+            }
+        });
 
         bottomCardView.setOnTouchListener(new View.OnTouchListener() {
 
@@ -179,6 +186,29 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         });
 
 
+    }
+
+    private void startShuffle() {
+        Collections.shuffle(shuffledMusicList);
+        currentIndex = -1;
+        isShuffling = true;
+        playNextSong();
+    }
+    private void stopShuffle() {
+        isShuffling = false;
+    }
+
+    private void playNextSong() {
+        currentIndex++;
+        if (currentIndex >= shuffledMusicList.size()) {
+            // if every song has been shuffled
+            Collections.shuffle(shuffledMusicList);
+            currentIndex = 0;
+        }
+
+        MusicList nextSong = shuffledMusicList.get(currentIndex);
+
+        onChanged(currentIndex);
     }
 
     private void filterList(String text) {
@@ -262,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                 int getAlbumResId = 0;
                 final MusicList musicList = new MusicList(getMusicFileName, getAlbumResId, getArtistName, getDuration, false, musicFileUri, albumArt);
                 musicLists.add(musicList);
+                shuffledMusicList.add(musicList);
 
             }
 
