@@ -65,8 +65,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
         holder.albumArt.setImageURI(list2.getAlbumArt());
 
         holder.itemView.setOnClickListener(v -> {
-            ((MainActivity)
-            v.getContext()).updateBottomCardView(list2);
+            //((MainActivity)
+            //v.getContext()).updateBottomCardView(list2);
         });
 
 

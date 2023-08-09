@@ -2,6 +2,7 @@ package com.thenewkenya.Rebel;
 
 import android.annotation.SuppressLint;
 import android.Manifest;
+import androidx.palette.graphics.Palette;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Notification;
@@ -14,6 +15,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.Image;
@@ -43,6 +46,7 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
     private boolean isPlaying = false;
 
-    private LinearProgressIndicator linearProgressIndicator;
+    private ProgressBar progressBar;
 
     private Timer timer;
     private int currentSongListPosition = 0;
@@ -87,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     SecureRandom rand = new SecureRandom();
 
     private CardView bottomCardView;
+    private ImageView albumArtImageView;
 
 
 
@@ -244,7 +249,8 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                 }
 
 
-                final MusicList musicList = new MusicList(getMusicFileName, getArtistName, getDuration, false, musicFileUri, albumArt);
+                int getAlbumResId = 0;
+                final MusicList musicList = new MusicList(getMusicFileName, getAlbumResId, getArtistName, getDuration, false, musicFileUri, albumArt);
                 musicLists.add(musicList);
 
             }
@@ -270,6 +276,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         textViewArtist.setText(musicList.getArtist());
         album_art.setImageURI(musicList.getAlbumArt());
 
+
         btn_play_pause.setOnClickListener(view -> {
             if (isPlaying) {
                 pausePlayback();
@@ -286,9 +293,10 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     Runnable updateLinearProgressIndicator = new Runnable() {
         @Override
         public void run() {
-            LinearProgressIndicator media_player_bar_progress_indicator = bottomCardView.findViewById(R.id.media_player_bar_progress_indicator);
+            ProgressBar progressBar = findViewById(R.id.media_player_bar_progress_indicator);
+            //LinearProgressIndicator media_player_bar_progress_indicator = findViewById(R.id.media_player_bar_progress_indicator);
             int currentPosition = mediaPlayer.getCurrentPosition();
-            media_player_bar_progress_indicator.setProgress(currentPosition);
+            progressBar.setProgress(currentPosition);
 
             handler.postDelayed(this, 1000);
         }
@@ -332,7 +340,8 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             MusicList musicList = musicLists.get(position);
             updateBottomCardView(musicList);
         }
-        linearProgressIndicator = findViewById(R.id.media_player_bar_progress_indicator);
+
+        progressBar = findViewById(R.id.media_player_bar_progress_indicator);
 
         currentSongListPosition = position;
 
@@ -351,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             while(mediaPlayer.isPlaying()) {
                 int currentPosition = mediaPlayer.getCurrentPosition();
                 runOnUiThread(() -> {
-                    linearProgressIndicator.setProgress(currentPosition);
+                    progressBar.setProgress(currentPosition);
                 });
             }
             try {
@@ -364,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         }).start();
 
         mediaPlayer.setOnPreparedListener(mp -> {
-            linearProgressIndicator.setMax(mediaPlayer.getDuration());
+            progressBar.setMax(mediaPlayer.getDuration());
             final int getTotalDuration = mp.getDuration();
 
             String generateDuration = String.format(Locale.getDefault(), "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(getTotalDuration), TimeUnit.MILLISECONDS.toSeconds(getTotalDuration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(getTotalDuration)));
