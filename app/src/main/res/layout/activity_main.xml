@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:src="@drawable/shuffle_off_icon"
-        app:backgroundTint="@color/material_dynamic_secondary40"
+        app:backgroundTint="@color/material_dynamic_primary50"
         app:elevation="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -96,17 +96,26 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp">
+            android:padding="6dp">
 
             <!-- Album Art Image -->
-            <ImageView
-                android:id="@+id/album_art"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/album_art_container"
                 android:layout_width="60dp"
                 android:layout_height="70dp"
-                android:src="@drawable/music_note_icon"
-                android:layout_centerVertical="true"
-                android:layout_alignParentStart="true"
-                android:scaleType="centerCrop" />
+                app:cardCornerRadius="5dp"
+
+                >
+                <ImageView
+                    android:id="@+id/album_art"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/music_note_icon"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:scaleType="centerCrop" />
+            </androidx.cardview.widget.CardView>
+
 
             <!-- Song Details -->
             <TextView
@@ -114,8 +123,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="9dp"
-                android:layout_toEndOf="@id/album_art"
-
+                android:layout_toEndOf="@id/album_art_container"
+                android:textColor="#fff"
+                android:textStyle="bold"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="Song Title"
@@ -128,12 +138,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/textViewTitle"
-                android:layout_toEndOf="@id/album_art"
-
+                android:layout_toEndOf="@id/album_art_container"
+                android:textColor="#CAC4C4"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="Artist Name"
-
                 android:maxLines="1"
                 android:ellipsize="end" />
 
