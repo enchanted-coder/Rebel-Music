@@ -21,18 +21,24 @@ import java.util.concurrent.TimeUnit;
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder> {
 
     private List<MusicList> list;
+    private List<MusicList> songList = new ArrayList<>();
+    private List<MusicList> filteredList = new ArrayList<>();
     private final Context context;
     private int playingPosition = 0;
     private final SongChangeListener songChangeListener;
 
-
+    public void setSongList(List<MusicList> songList) {
+        this.songList = songList;
+        notifyDataSetChanged();
+    }
 
     public void setFilteredList(List<MusicList> filteredList) {
-        list = filteredList;
+        this.list = filteredList;
 
         notifyDataSetChanged();
 
     }
+
 
     public MusicAdapter(List<MusicList> list, Context context) {
         this.list = list;
@@ -55,7 +61,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
             playingPosition = position;
             //holder.rootLayout.setBackgroundResource(R.drawable.round_back_blue_10);
         } else {
-            holder.rootLayout.setBackgroundResource(R.drawable.round_back_10);
+            //holder.rootLayout.setBackgroundResource(R.drawable.round_back_10);
         }
 
         String generationDuration = String.format(Locale.getDefault(), "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(list2.getDuration())), TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(list2.getDuration())) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(list2.getDuration()))));

@@ -14,7 +14,7 @@
         android:paddingBottom="3dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/musicRecyclerView"
+        app:layout_constraintBottom_toTopOf="@id/mainscreen"
         >
 
         <androidx.appcompat.widget.SearchView
@@ -43,40 +43,51 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/musicRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/mainscreen"
         android:layout_marginTop="40dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:orientation="vertical"
-        android:padding="8dp"
-        android:layout_below="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/musicRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:layout_below="@+id/topBar" />
 
 
-         />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/shuffleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:contentDescription="@string/shuffle"
+            android:backgroundTint="#B2A2D8"
+            app:icon="@drawable/shuffle_off_icon"
+            app:iconTint="#FFF"
+            app:layout_anchor="@id/musicRecyclerView"
+            app:layout_anchorGravity="bottom|end"
+            app:layout_insetEdge="bottom"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:iconSize="32dp"
+
+            />
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/shuffleButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:src="@drawable/shuffle_off_icon"
-        app:backgroundTint="@color/material_dynamic_primary50"
-        app:elevation="6dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.954"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.832"
-        app:rippleColor="@color/material_dynamic_neutral80">
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
-    </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+
+
 
     <androidx.cardview.widget.CardView
         android:id="@+id/bottomCardView"
@@ -89,7 +100,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="1dp"
         android:clickable="true"
         android:focusable="true">
 

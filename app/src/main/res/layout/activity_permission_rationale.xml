@@ -31,28 +31,52 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/textViewMessage"
-        android:layout_width="240dp"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="@string/in_order_to_see_your_music_you_need_to_enable_read_storage_permissions"
-        android:textSize="20sp"
-        android:textColor="@color/material_dynamic_secondary70" />
 
-    <Button
-        android:id="@+id/reqOk"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textViewMessage"
-        android:layout_centerHorizontal="false"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="90dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="224dp"
+        android:layout_height="205dp"
+        android:layout_below="@+id/topBar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="243dp"
+        android:layout_marginEnd="91dp"
+        android:layout_marginBottom="248dp">
 
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:text="@string/grant_permissions"
-        android:textSize="18sp"
+        <TextView
+            android:id="@+id/textViewMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="48dp"
+            android:text="@string/in_order_to_see_your_music_you_need_to_enable_read_storage_permissions"
+            android:textColor="#B2A2D8"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@id/reqOk"
+            tools:layout_editor_absoluteX="0dp" />
 
-        android:background="@drawable/button_background" />
+        <Button
+            android:id="@+id/reqOk"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_below="@id/textViewMessage"
+            android:layout_centerHorizontal="false"
+            android:layout_marginStart="55dp"
+            android:layout_marginEnd="55dp"
+            android:layout_marginTop="80dp"
+            android:background="@drawable/button_background"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            android:text="@string/grant_permissions"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewMessage" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </RelativeLayout>
