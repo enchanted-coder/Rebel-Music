@@ -39,6 +39,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.color.DynamicColors;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -84,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     private ExtendedFloatingActionButton shuffleButton;
     private TextView songCountText;
     private MediaPlayer mediaPlayer;
-
     private boolean isPlaying = false;
 
     private ProgressBar progressBar;
@@ -98,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     private ImageView albumArtImageView;
 
     private GestureDetectorCompat gestureDetector;
-
 
 
     // start here
@@ -119,7 +119,6 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         gestureDetector = new GestureDetectorCompat(this, new MyGestureListener(this));
 
         mediaPlayer = new MediaPlayer();
-
         musicRecyclerView = findViewById(R.id.musicRecyclerView);
         musicRecyclerView.setHasFixedSize(true);
         musicRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -194,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
     }
 
+
     private void shuffleSongs() {
         Collections.shuffle(musicLists);
     }
@@ -204,14 +204,14 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         if (musicLists.isEmpty()) {
             return;
         }
-        MediaPlayer mediaPlayer1 = new MediaPlayer();
-        mediaPlayer1.setOnCompletionListener(mp -> {
+        MediaPlayer mediaPlayer = new MediaPlayer();
+        mediaPlayer.setOnCompletionListener(mp -> {
             currentSongIndex++;
             if (currentSongIndex < musicLists.size()) {
                 playSong();
             } else {
                 // All songs played
-                mediaPlayer1.release();
+                mediaPlayer.release();
                 currentSongIndex = 0; // resets index
             }
         });
@@ -643,7 +643,10 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mediaPlayer.release();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 
 

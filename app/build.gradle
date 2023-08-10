@@ -42,6 +42,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation "androidx.media:media:1.6.0"
     implementation 'androidx.palette:palette:1.0.0'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.19.0'
 
 
     testImplementation 'junit:junit:4.13.2'

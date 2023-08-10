@@ -70,6 +70,7 @@
             android:layout_margin="16dp"
             android:contentDescription="@string/shuffle"
             android:backgroundTint="#B2A2D8"
+
             app:icon="@drawable/shuffle_off_icon"
             app:iconTint="#FFF"
             android:textColor="#FFF"
