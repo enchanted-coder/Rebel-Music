@@ -61,7 +61,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
             playingPosition = position;
             //holder.rootLayout.setBackgroundResource(R.drawable.round_back_blue_10);
         } else {
-            holder.rootLayout.setBackgroundResource(R.drawable.round_back_10);
+            //holder.rootLayout.setBackgroundResource(R.drawable.round_back_10);
         }
 
         String generationDuration = String.format(Locale.getDefault(), "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(list2.getDuration())), TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(list2.getDuration())) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(list2.getDuration()))));

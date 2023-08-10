@@ -16,6 +16,7 @@ import android.content.ContentUris;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     private RecyclerView musicRecyclerView;
 
     private ExtendedFloatingActionButton shuffleButton;
-
+    private TextView songCountText;
     private MediaPlayer mediaPlayer;
 
     private boolean isPlaying = false;
@@ -126,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         shuffleButton = findViewById(R.id.shuffleButton);
 
 
+
         // Android 13+ requires specific storage permissions
         // Android 12 and earlier use READ_EXTERNAL_STORAGE for all.
         if (Utils.isTiramisu()) {
@@ -158,11 +160,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             // shuffle logic
 
             shuffleSongs();
-
             startPlayingShuffledSongs();
-
-
-
         });
 
         bottomCardView.setOnTouchListener(new View.OnTouchListener() {
@@ -218,35 +216,38 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             }
         });
         playSong();
+
+        updateShuffleFABColor(musicLists.get(currentSongIndex));
     }
 
     private void playSong() {
         onChanged(currentSongIndex);
     }
 
-    /*
-    private void startShuffle() {
-        Collections.shuffle(shuffledMusicList);
-        currentIndex = -1;
-        isShuffling = true;
-        playNextSong();
-    }
-    private void stopShuffle() {
-        isShuffling = false;
-    }
+    private void updateShuffleFABColor(MusicList musicList) {
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
-    private void playNextSong() {
-        currentIndex++;
-        if (currentIndex >= shuffledMusicList.size()) {
-            // if every song has been shuffled
-            Collections.shuffle(shuffledMusicList);
-            currentIndex = 0;
+        String[] projection = {
+                MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM_ID
+        };
+
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                @SuppressLint("Range") long albumId = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+
+                Uri albumArtUri = ContentUris.withAppendedId(Uri.parse(getResources().getString(R.string.album_art_dir)), albumId);
+
+
+            }
+            cursor.close();
         }
-
-        MusicList nextSong = shuffledMusicList.get(currentIndex);
-
-        onChanged(currentIndex);
-    } */
+        performColorExtraction(musicList.getAlbumArt());
+    }
 
     private void filterList(String text) {
         List<MusicList> filteredList = new ArrayList<>();
@@ -328,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
                 final MusicList musicList = new MusicList(getMusicFileName, getArtistName, getDuration, false, musicFileUri, albumArt);
                 musicLists.add(musicList);
-                //shuffledMusicList.add(musicList);
+                shuffleButton.setText(String.valueOf(musicLists.size()));
 
             }
 
@@ -398,11 +399,12 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             Palette.from(albumArtBitmap).generate(palette -> {
                 int defaultColor = ContextCompat.getColor(this, com.google.android.material.R.color.material_dynamic_neutral_variant0);
                 assert palette != null;
-                int dominantColor = palette.getDarkVibrantColor(defaultColor);
+                int darkVibrantColor = palette.getDarkVibrantColor(defaultColor);
+                int dominantColor = palette.getVibrantColor(defaultColor);
 
 
-
-                bottomCardView.setCardBackgroundColor(dominantColor);
+                shuffleButton.setBackgroundTintList(ColorStateList.valueOf(dominantColor));
+                bottomCardView.setCardBackgroundColor(darkVibrantColor);
             });
         } catch (IOException e) {
             e.printStackTrace();
@@ -452,6 +454,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
     @Override
     public void onChanged(int position) {
+
         ImageView btn_play_pause = bottomCardView.findViewById(R.id.btn_play_pause);
         startUpdatingProgressBar();
         btn_play_pause.setImageResource(R.drawable.pause_icon);
@@ -677,38 +680,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     }
 
 
-    private void showPermissionRationale() {
-        AlertDialog builder = new AlertDialog.Builder(this).create();
-        builder.setIcon(R.drawable.ic_folder);
-        builder.setTitle(getString(R.string.app_name));
-        builder.setMessage(getString(R.string.perm_rationale));
-        builder.setButton(AlertDialog.BUTTON_POSITIVE, getString(android.R.string.ok),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        final int READ_FILES_CODE = 2588;
 
-                        if (Utils.isTiramisu()) {
-                            requestPermissions(new String[]{Manifest.permission.READ_MEDIA_AUDIO}
-                                    , READ_FILES_CODE);
-                        } else {
-                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}
-                                    , READ_FILES_CODE);
-                        }
-
-                        recreate();
-
-                    }
-                });
-
-        builder.setCanceledOnTouchOutside(false);
-        try {
-            builder.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
 
