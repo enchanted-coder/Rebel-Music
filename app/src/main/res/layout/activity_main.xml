@@ -14,7 +14,7 @@
         android:paddingBottom="3dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/musicRecyclerView"
         >
 
         <androidx.appcompat.widget.SearchView
@@ -44,12 +44,17 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-
         android:id="@+id/musicRecyclerView"
-        android:layout_marginBottom="10dp"
-        android:layout_below="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="40dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:layout_below="@+id/topBar"
+
 
          />
 
@@ -68,15 +73,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.832"
-        app:rippleColor="@color/md_theme_dark_surfaceVariant">
+        app:rippleColor="@color/material_dynamic_neutral80">
 
 
     </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/bottomCardView"
-        android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_width="match_parent"
+        android:layout_height="63dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         app:cardCornerRadius="8dp"
@@ -84,7 +89,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:clickable="true">
+        android:layout_marginBottom="30dp"
+        android:clickable="true"
+        android:focusable="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -142,18 +149,20 @@
                  />
         </RelativeLayout>
 
+        <!-- Linear Progress Indicator -->
+        <ProgressBar
+            android:id="@+id/media_player_bar_progress_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_marginTop="60dp"
+            app:layout_constraintTop_toBottomOf="@id/bottomCardView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.cardview.widget.CardView>
 
-    <!-- Linear Progress Indicator -->
-    <ProgressBar
-        android:id="@+id/media_player_bar_progress_indicator"
-        android:layout_width="0dp"
-        android:layout_height="8dp"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/bottomCardView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+
 
 
 
