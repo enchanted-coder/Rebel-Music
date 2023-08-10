@@ -321,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                long albumId = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                @SuppressLint("Range") long albumId = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
 
                 Uri albumArtUri = ContentUris.withAppendedId(Uri.parse(getResources().getString(R.string.album_art_dir)), albumId);
 
