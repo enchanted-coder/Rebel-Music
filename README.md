@@ -12,9 +12,9 @@ Rebel is a beautiful, elegant and intuitive offline music player for Android.
 4. Grant the necessary storage permissions to access your music files.
 5. Enjoy your music library in a beautiful and seamless offline music player experience.
 
-## Screenshots
+## Screenshot
+![rebel_latest_screenshot](https://github.com/enchanted-coder/Rebel-Music/assets/71554231/197c085a-09b1-4cf6-a582-fddcf9a94b61)
 
-![rebelapk](https://github.com/enchanted-coder/Rebel-Music/assets/71554231/0b2839eb-b404-45c4-807c-ea825bca706d)
 
 
 ## Contributing
