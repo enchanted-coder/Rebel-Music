@@ -399,12 +399,12 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             Palette.from(albumArtBitmap).generate(palette -> {
                 int defaultColor = ContextCompat.getColor(this, com.google.android.material.R.color.material_dynamic_neutral_variant0);
                 assert palette != null;
-                int darkVibrantColor = palette.getDarkVibrantColor(defaultColor);
-                int dominantColor = palette.getMutedColor(defaultColor);
+                int darkMutedColor = palette.getDarkMutedColor(defaultColor);
+                int mutedColor = palette.getMutedColor(defaultColor);
 
 
-                shuffleButton.setBackgroundTintList(ColorStateList.valueOf(dominantColor));
-                bottomCardView.setCardBackgroundColor(darkVibrantColor);
+                shuffleButton.setBackgroundTintList(ColorStateList.valueOf(mutedColor));
+                bottomCardView.setCardBackgroundColor(darkMutedColor);
             });
         } catch (IOException e) {
             e.printStackTrace();
