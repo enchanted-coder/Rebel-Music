@@ -21,18 +21,24 @@ import java.util.concurrent.TimeUnit;
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder> {
 
     private List<MusicList> list;
+    private List<MusicList> songList = new ArrayList<>();
+    private List<MusicList> filteredList = new ArrayList<>();
     private final Context context;
     private int playingPosition = 0;
     private final SongChangeListener songChangeListener;
 
-
+    public void setSongList(List<MusicList> songList) {
+        this.songList = songList;
+        notifyDataSetChanged();
+    }
 
     public void setFilteredList(List<MusicList> filteredList) {
-        list = filteredList;
+        this.list = filteredList;
 
         notifyDataSetChanged();
 
     }
+
 
     public MusicAdapter(List<MusicList> list, Context context) {
         this.list = list;

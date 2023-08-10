@@ -38,6 +38,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.color.DynamicColors;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -76,11 +77,11 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     private SearchView searchView;
     // List of all songs
     private List<MusicList> musicLists;
-    private List<MusicList> shuffledMusicList;
-    private int currentIndex = -1;
-    private FloatingActionButton shuffleButton;
-    private boolean isShuffling = false;
+
     private RecyclerView musicRecyclerView;
+
+    private ExtendedFloatingActionButton shuffleButton;
+
     private MediaPlayer mediaPlayer;
 
     private boolean isPlaying = false;
@@ -111,7 +112,6 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         searchView.clearFocus();
 
         musicLists = new ArrayList<>();
-        shuffledMusicList = new ArrayList<>(musicLists);
 
         bottomCardView = findViewById(R.id.bottomCardView);
         albumArtImageView = findViewById(R.id.album_art);
@@ -119,12 +119,12 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
         mediaPlayer = new MediaPlayer();
 
-
         musicRecyclerView = findViewById(R.id.musicRecyclerView);
         musicRecyclerView.setHasFixedSize(true);
         musicRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         shuffleButton = findViewById(R.id.shuffleButton);
+
 
         // Android 13+ requires specific storage permissions
         // Android 12 and earlier use READ_EXTERNAL_STORAGE for all.
@@ -150,15 +150,19 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                     new Intent(MainActivity.this.getApplicationContext(), MediaSessionService.class));
         }*/
 
-        shuffleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isShuffling) {
-                    startShuffle();
-                } else {
-                    stopShuffle();
-                }
-            }
+
+
+
+
+        shuffleButton.setOnClickListener(v -> {
+            // shuffle logic
+
+            shuffleSongs();
+
+            startPlayingShuffledSongs();
+
+
+
         });
 
         bottomCardView.setOnTouchListener(new View.OnTouchListener() {
@@ -192,6 +196,35 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
     }
 
+    private void shuffleSongs() {
+        Collections.shuffle(musicLists);
+    }
+
+    private int currentSongIndex = 0;
+
+    private void startPlayingShuffledSongs() {
+        if (musicLists.isEmpty()) {
+            return;
+        }
+        MediaPlayer mediaPlayer1 = new MediaPlayer();
+        mediaPlayer1.setOnCompletionListener(mp -> {
+            currentSongIndex++;
+            if (currentSongIndex < musicLists.size()) {
+                playSong();
+            } else {
+                // All songs played
+                mediaPlayer1.release();
+                currentSongIndex = 0; // resets index
+            }
+        });
+        playSong();
+    }
+
+    private void playSong() {
+        onChanged(currentSongIndex);
+    }
+
+    /*
     private void startShuffle() {
         Collections.shuffle(shuffledMusicList);
         currentIndex = -1;
@@ -213,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         MusicList nextSong = shuffledMusicList.get(currentIndex);
 
         onChanged(currentIndex);
-    }
+    } */
 
     private void filterList(String text) {
         List<MusicList> filteredList = new ArrayList<>();
@@ -237,6 +270,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
             musicAdapter.setFilteredList(filteredList);
 
         }
+
     }
 
     @SuppressLint("Range")
@@ -294,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
                 final MusicList musicList = new MusicList(getMusicFileName, getArtistName, getDuration, false, musicFileUri, albumArt);
                 musicLists.add(musicList);
-                shuffledMusicList.add(musicList);
+                //shuffledMusicList.add(musicList);
 
             }
 

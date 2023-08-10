@@ -9,4 +9,5 @@
     <string name="perm_rationale_text">Hello, this is a beautiful UI text!</string>
     <string name="in_order_to_see_your_music_you_need_to_enable_read_storage_permissions">In order to see your music you need to enable read storage permissions</string>
     <string name="grant_permissions">Grant Permissions</string>
+    <string name="shuffle" />
 </resources>
