@@ -400,7 +400,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                 int defaultColor = ContextCompat.getColor(this, com.google.android.material.R.color.material_dynamic_neutral_variant0);
                 assert palette != null;
                 int darkVibrantColor = palette.getDarkVibrantColor(defaultColor);
-                int dominantColor = palette.getVibrantColor(defaultColor);
+                int dominantColor = palette.getMutedColor(defaultColor);
 
 
                 shuffleButton.setBackgroundTintList(ColorStateList.valueOf(dominantColor));
