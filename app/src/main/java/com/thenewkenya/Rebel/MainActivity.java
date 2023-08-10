@@ -19,6 +19,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.Image;
@@ -46,6 +47,7 @@ import com.thenewkenya.Rebel.databinding.ActivityMainBinding;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -56,6 +58,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.jetbrains.annotations.NonNls;
+
+import java.io.InputStream;
 import java.security.SecureRandom;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -110,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         shuffledMusicList = new ArrayList<>(musicLists);
 
         bottomCardView = findViewById(R.id.bottomCardView);
-
+        albumArtImageView = findViewById(R.id.album_art);
         gestureDetector = new GestureDetectorCompat(this, new MyGestureListener(this));
 
         mediaPlayer = new MediaPlayer();
@@ -239,9 +243,6 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     private void getMusicFiles() {
         bottomCardView.setVisibility(View.INVISIBLE);
         ContentResolver contentResolver = getContentResolver();
-
-
-
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String[] projection = new String[]{
                 MediaStore.Audio.Media.ARTIST,
@@ -284,13 +285,14 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
                 albumArt = ContentUris.withAppendedId(Uri.parse(getResources().getString(R.string.album_art_dir)), albumId);
                 String getDuration = "00:00";
 
+                Uri albumart = albumArt;
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     getDuration = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DURATION));
                 }
 
 
-                int getAlbumResId = 0;
-                final MusicList musicList = new MusicList(getMusicFileName, getAlbumResId, getArtistName, getDuration, false, musicFileUri, albumArt);
+                final MusicList musicList = new MusicList(getMusicFileName, getArtistName, getDuration, false, musicFileUri, albumArt);
                 musicLists.add(musicList);
                 shuffledMusicList.add(musicList);
 
@@ -305,18 +307,42 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
     }
 
     void updateBottomCardView(MusicList musicList) {
+
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+
+        String[] projection = {
+                MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM_ID
+        };
+
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                long albumId = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+
+                Uri albumArtUri = ContentUris.withAppendedId(Uri.parse(getResources().getString(R.string.album_art_dir)), albumId);
+
+
+            }
+            cursor.close();
+        }
+
         bottomCardView.setVisibility(View.VISIBLE);
 
         ImageView album_art = bottomCardView.findViewById(R.id.album_art);
         TextView textViewTitle = bottomCardView.findViewById(R.id.textViewTitle);
         TextView textViewArtist = bottomCardView.findViewById(R.id.textViewArtist);
         ImageView btn_play_pause = bottomCardView.findViewById(R.id.btn_play_pause);
-        //LinearProgressIndicator media_player_bar_progress_indicator = bottomCardView.findViewById(R.id.media_player_bar_progress_indicator);
+
 
         textViewTitle.setText(musicList.getTitle());
         textViewArtist.setText(musicList.getArtist());
         album_art.setImageURI(musicList.getAlbumArt());
 
+        performColorExtraction(musicList.getAlbumArt());
 
         btn_play_pause.setOnClickListener(view -> {
             if (isPlaying) {
@@ -327,6 +353,26 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
         });
 
 
+    }
+
+    private void performColorExtraction(Uri albumArtUri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(albumArtUri);
+            Bitmap albumArtBitmap = BitmapFactory.decodeStream(inputStream);
+            inputStream.close();
+
+            Palette.from(albumArtBitmap).generate(palette -> {
+                int defaultColor = ContextCompat.getColor(this, com.google.android.material.R.color.material_dynamic_neutral_variant0);
+                assert palette != null;
+                int dominantColor = palette.getDarkVibrantColor(defaultColor);
+
+
+
+                bottomCardView.setCardBackgroundColor(dominantColor);
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     Handler handler = new Handler();
@@ -378,11 +424,21 @@ public class MainActivity extends AppCompatActivity implements SongChangeListene
 
 
         if (position >=0 && position < musicLists.size()) {
-            MusicList musicList = musicLists.get(position);
-            updateBottomCardView(musicList);
+            new Thread(() -> {
+                MusicList musicList = musicLists.get(position);
+                runOnUiThread(() -> {
+                    updateBottomCardView(musicList);
+                });
+            }).start();
+
+
+
         }
 
         progressBar = findViewById(R.id.media_player_bar_progress_indicator);
+
+
+
 
         currentSongListPosition = position;
 
